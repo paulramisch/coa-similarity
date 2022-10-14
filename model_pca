@@ -1,0 +1,15 @@
+# PCA-Model zum Vergleich Suche ähnlicher Wappen in einem Datenset
+# Implementierung angelehnt an https://medium.com/analytics-vidhya/pca-vs-t-sne-17bcd882bf3d
+
+# Schritte
+# 1. 
+
+
+# Bibliotheken laden
+import cv2
+import numpy as np
+from sklearn.decomposition import PCA
+
+# Load Data
+for img in folder:
+    img = cv2.cvtColor(cv2.imread(img))
