@@ -73,7 +73,11 @@ https://www.kaggle.com/code/alincijov/image-similarity-search-in-pytorch (abgeru
 
 #### Pretrained model:
 Maciej D. Korzec, Recommending Similar Images Using PyTorch, Full transfer learning implementation with Resnet18, medium.com Towards Data Science 2020,
-https://towardsdatascience.com/recommending-similar-images-using-pytorch-da019282770c  (abgerufen: 12.10.22).
+https://towardsdatascience.com/recommending-similar-images-using-pytorch-da019282770c (abgerufen: 12.10.22).
+
+#### Feature based alignment (um PCA performance zu verbessern):
+Satya Mallick, Feature Based Image Alignment using OpenCV (C++/Python), learnopencv.com 2018,
+https://learnopencv.com/image-alignment-feature-based-using-opencv-c-python/ (abgerufen: 17.10.22).
 
 ### Abstrakte Maße
 - Farb-Histogramm
