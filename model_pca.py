@@ -1,54 +1,59 @@
 # PCA-Model zum Vergleich Suche ähnlicher Wappen in einem Datenset
 # Implementierung angelehnt an https://medium.com/analytics-vidhya/pca-vs-t-sne-17bcd882bf3d
+# https://towardsdatascience.com/eigenfaces-face-classification-in-python-7b8d2af3d3ea
 
-# Schritte
-# 1. 
-
-
-# Bibliotheken laden
-import cv2
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
+
+from sklearn.svm import SVC
+from sklearn.model_selection import train_test_split
 from sklearn.decomposition import PCA
+from sklearn.metrics import confusion_matrix, classification_report
 
-# 1. Daten transformieren
-# Dataframe anlegen
+import warnings
+warnings.filterwarnings('ignore')
 
-# PCA, Zahl der Dimensionen
-pca_components = 50
 
-# Über Bilder iterieren
-for img in folder:
-    img = cv2.cvtColor(cv2.imread(img)), cv2.COLOR_BGR2RGB)
+# Load data
+coa_data = pd.read_csv('data/pca_training_data.csv')
+coa_data.head()
 
-    # img.shape # Gibt die Maße zurück
-    # plt.imshow(img)
 
-    # Split the image in rgb values
-    r, g, b = cv2.split(img)
-    r, g, b = r / 255, g / 225, b / 255
+# Img size: Square root of the number of columns, minus the label column
+size = int((coa_data.shape[1] - 1) ** (1/2))
 
-    # Show dimension
-    # plt.imshow(r)
 
-    # Zu Dataframe hinzufügen
+# Visualisation
+def plot_coa(pixels):
+    fig, axes = plt.subplots(5, 5, figsize=(6, 6))
+    for i, ax in enumerate(axes.flat):
+        ax.imshow(np.array(pixels)[i].reshape(size, size), cmap='gray')
+    plt.show()
 
-# PCA erstellen
-pca_r = PCA(n_components = pca_components)
-reduced_r = pca_r.fit_transform(r)
 
-pca_g = PCA(n_components = pca_components)
-reduced_g = pca_r.fit_transform(g)
+plot_coa(coa_data.drop('0', axis=1))
 
-pca_b = PCA(n_components = pca_components)
-reduced_b = pca_r.fit_transform(b)
 
-# Kombinieren
-combinded = np.array([reduced_r, reduced_g, reduced_b])
+# Data prep
+X = coa_data.drop('0', axis=1)
+y = coa_data['0']
 
-# Rekonstruieren
-reconstruced_r = pca_r.inberse_transform(reduced_r)
-reconstruced_g = pca_g.inberse_transform(reduced_g)
-reconstruced_b = pca_b.inberse_transform(reduced_b)
 
-img_reconstructed = (cv2.merge((reconstruced_r,reconstruced_g,reconstruced_b)))
+# PCA
+X_train, X_test, y_train, y_test = train_test_split(X, y)
+pca = PCA().fit(X_train)
+
+
+# Visual analysis of the number of needed variables
+plt.figure(figsize=(18, 7))
+plt.plot(pca.explained_variance_ratio_.cumsum(), lw=3)
+# plt.show()
+
+
+# Second training with compontent number
+pca = PCA(n_components=20).fit(X_train)
+X_train_pca = pca.transform(X_train)
+
+
+# Building comparision engine

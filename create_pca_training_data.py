@@ -7,7 +7,7 @@ import numpy as np
 
 # Variables
 img_import = 'data/coa'
-export = 'data/pca_training_data.feather'
+export = 'data/pca_training_data.csv'
 size = 100
 
 # Create dataframe for image vectors
@@ -68,11 +68,10 @@ for file in os.listdir(img_import):
             processed = process_img(img)
 
             vec_df = pd.DataFrame([np.concatenate(([file], processed))])
-            training_data = pd.concat([training_data, vec_df], axis=1)
+            training_data = pd.concat([training_data, vec_df], axis=0)
         else:
             print('NoneType Error for', file)
 
 # Export Dataframe
-training_data.columns = training_data.columns.astype(str)
-training_data.reset_index().to_feather(export)
+training_data.to_csv(export, index=False)
 print('Process finished')

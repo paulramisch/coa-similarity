@@ -21,8 +21,6 @@ Jede Zeile repräsentiert ein Bild; Umwandeln in Grautöne
 
 ### Ressourcen
 #### Allgemein
-Sascha Heyer, How to Implement Image Similarity Using Deep Learning, medium.com Towards Data Science, 2022,
-https://towardsdatascience.com/image-similarity-with-deep-learning-c17d83068f59 (abgerufen: 12.10.22).
 
 Erdogan Taskesen, Quantitative comparisons between t-SNE, UMAP, PCA, and Other Mappings, medium.com Towards Data Science, 2022,
 https://towardsdatascience.com/the-similarity-between-t-sne-umap-pca-and-other-mappings-c6453b80f303 (abgerufen: 12.10.22).
@@ -72,6 +70,9 @@ Alin Cijov, Image Similarity Search in PyTorch, kaggle,
 https://www.kaggle.com/code/alincijov/image-similarity-search-in-pytorch (abgerufen: 12.10.22).
 
 #### Pretrained model:
+Sascha Heyer, How to Implement Image Similarity Using Deep Learning, medium.com Towards Data Science, 2022,
+https://towardsdatascience.com/image-similarity-with-deep-learning-c17d83068f59 (abgerufen: 12.10.22).
+
 Maciej D. Korzec, Recommending Similar Images Using PyTorch, Full transfer learning implementation with Resnet18, medium.com Towards Data Science 2020,
 https://towardsdatascience.com/recommending-similar-images-using-pytorch-da019282770c (abgerufen: 12.10.22).
 
