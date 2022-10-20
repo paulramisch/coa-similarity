@@ -21,7 +21,6 @@ Jede Zeile repräsentiert ein Bild; Umwandeln in Grautöne
 
 ### Ressourcen
 #### Allgemein
-
 Erdogan Taskesen, Quantitative comparisons between t-SNE, UMAP, PCA, and Other Mappings, medium.com Towards Data Science, 2022,
 https://towardsdatascience.com/the-similarity-between-t-sne-umap-pca-and-other-mappings-c6453b80f303 (abgerufen: 12.10.22).
 
