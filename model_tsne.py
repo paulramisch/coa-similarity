@@ -5,12 +5,9 @@
 
 import numpy as np
 import pandas as pd
-import cv2
 import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from scipy.spatial import distance
-from helper_functions import process_img_pca
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -31,6 +28,7 @@ coa_data_labels = coa_data['0']
 # Max 3 dimensions
 tsne = TSNE(n_components=3, learning_rate=150, perplexity=30, angle=0.2, verbose=2)
 tsne_result = tsne.fit_transform(coa_data_img)
+
 
 # Function to compare
 def compare(img):

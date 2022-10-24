@@ -8,7 +8,7 @@ import cv2
 import matplotlib.pyplot as plt
 from scipy.spatial import distance
 import umap.umap_ as umap
-from helper_functions import process_img_pca
+from helper_functions import process_img
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -43,7 +43,7 @@ def compare(img_src):
     img = cv2.imread(img_src)
 
     # Transform image
-    coa = process_img_pca(img, 100)
+    coa = process_img(img, 100)
 
     # Reformat as DataFrame
     coa_df = pd.DataFrame([np.concatenate((['coa'], coa))]).drop(0, axis=1)

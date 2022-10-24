@@ -29,7 +29,7 @@ def resize(img, size=100, bg_color=255):
 
 
 # Function to process image
-def process_img_pca(img, size, color=True):
+def process_img(img, size, color=True):
     # Resize
     resized = resize(img, size)
 
