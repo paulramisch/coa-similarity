@@ -11,46 +11,31 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from scipy.spatial import distance
 from helper_functions import process_img_pca
+from pandas.api.types import CategoricalDtype
 import warnings
 warnings.filterwarnings('ignore')
 
 # Load data
 coa_data = pd.read_csv('data/pca_training_data.csv')
-coa_data.head()
-
 
 # Img size: Square root of the number of columns, minus the label column (RGB)
+# If greyscale: size = int((coa_data.shape[1] - 1) ** (1/2))
 size = int(((coa_data.shape[1] - 1) / 3) ** (1/2))
-# If greyscale:
-# size = int((coa_data.shape[1] - 1) ** (1/2))
-
-# Visualisation
-def plot_coa(pixels):
-    fig, axes = plt.subplots(5, 5, figsize=(6, 6))
-    for i, ax in enumerate(axes.flat):
-        # Reshape flattened view (Third dimension is for RGB)
-        ax.imshow(np.array(pixels)[i].reshape(size, size, 3))
-    plt.show()
-
-plot_coa(coa_data.drop('0', axis=1))
-
 
 # Data prep
 coa_data_img = coa_data.drop('0', axis=1)
 coa_data_labels = coa_data['0']
 
-
 # PCA
-pca = PCA().fit(coa_data_img)
-
+# pca = PCA().fit(coa_data_img)
 
 # Visual analysis of the number of needed variables
-plt.figure(figsize=(18, 7))
-plt.plot(pca.explained_variance_ratio_.cumsum(), lw=3)
+# plt.figure(figsize=(18, 7))
+# plt.plot(pca.explained_variance_ratio_.cumsum(), lw=3)
 # plt.show()
 # len(np.where(pca.explained_variance_ratio_.cumsum() < 0.99)[0])
 
-# Second training with component number
+# Training with component number based on analysis
 pca = PCA(n_components=20).fit(coa_data_img)
 
 
@@ -86,12 +71,14 @@ def compare(img_src):
     # Cosine distance comparison
     similar_idx = [ distance.cosine(img_features[0], feat) for feat in pca_features ]
 
-    # Get most similar images
-    idx_closest = sorted(range(len(similar_idx)), key=lambda k: similar_idx[k])[0:5]
+    # Add cos distance to data
+    coa_data_sorted = coa_data
+    coa_data_sorted['cos_distance'] = similar_idx
+    coa_data_sorted = coa_data_sorted.sort_values('cos_distance')
 
     # Plot most similar images
-    plot_most_similar(coa_data[coa_data.index.isin(idx_closest)].drop('0', axis=1))
+    plot_most_similar(coa_data_sorted.drop(['0', 'cos_distance'], axis=1))
 
-    return coa_data[coa_data.index.isin(idx_closest)]['0'].values
+    return coa_data_sorted[['0', 'cos_distance']].head(10).to_numpy()
 
 compare('data/test_data/1.png')
