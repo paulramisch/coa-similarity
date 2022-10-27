@@ -11,6 +11,7 @@ Vorteil offenbar: Fokus auf lokale Ähnlichkeiten
 - UMAP
 Ebenfalls Technik zur Dimenionsionalitätsreduktion, aber 
 
+Dinge, dich noch zu tun sind: https://www.geeksforgeeks.org/how-to-normalize-images-in-pytorch/
 Bei PCA zu beachten: Bildausschnitte müssen gut gewählt sein; also Wappen mitting & ähnlich viel Hintergrund; gleiche Auflösung
 
 ### Principal Component Analysis

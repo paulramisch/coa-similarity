@@ -29,15 +29,20 @@ def resize(img, size=100, bg_color=0):
 
 
 # Function to process image
-def process_img(img, size, color=True):
+def process_img(img, size, color=True, flatten=True):
     # Resize
     resized = resize(img, size)
 
-    if color:
+    if color and flatten:
         processed = cv2.cvtColor(resized, cv2.COLOR_BGR2RGB)
+    elif color:
+        processed = resized
     else:
         # Convert to BW
         processed = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
 
     # Create image vectors and return
-    return processed.flatten()
+    if flatten:
+        processed = processed.flatten()
+
+    return processed

@@ -59,7 +59,7 @@ def compare(img_src):
     img = cv2.imread(img_src)
 
     # Transform image
-    coa = process_img(img, 100)
+    coa = process_img(img, size)
 
     # Reformat as DataFrame
     coa_df = pd.DataFrame([np.concatenate((['coa'], coa))]).drop(0, axis=1)
