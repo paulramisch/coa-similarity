@@ -15,7 +15,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Load data
-coa_data = pd.read_csv('data/pca_training_data.csv')
+coa_data = pd.read_csv('data/training-data_100x100_rgb.csv')
 
 # Img size: Square root of the number of columns, minus the label column (RGB)
 # If greyscale: size = int((coa_data.shape[1] - 1) ** (1/2))

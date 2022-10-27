@@ -24,6 +24,9 @@ Jede Zeile repräsentiert ein Bild; Umwandeln in Grautöne
 Erdogan Taskesen, Quantitative comparisons between t-SNE, UMAP, PCA, and Other Mappings, medium.com Towards Data Science, 2022,
 https://towardsdatascience.com/the-similarity-between-t-sne-umap-pca-and-other-mappings-c6453b80f303 (abgerufen: 12.10.22).
 
+Anson Wong, Image Retrieval (via Autoencoders / Transfer Learning), Github 2019,
+https://github.com/ankonzoid/artificio/tree/master/image_retrieval (abgerufen: 25.10.22).
+
 #### PCA:
 Gute Ressourcen für PCA wurden für Eigenfaces geschrieben, wahrscheinlich möglich, solches nachzuahmen:
 
@@ -62,13 +65,19 @@ Nikolay Oskolkov, How Exactly UMAP Works, medium.com Towards Data Science 2019,
 https://towardsdatascience.com/how-exactly-umap-works-13e3040e1668 (abgerufen: 12.10.22).
 
 #### Auto-Encoders:
+Phillip Lippe, Tutorial 9: Deep Autoencoders, UVA readthedocs.ui 2022,
+https://uvadlc-notebooks.readthedocs.io/en/latest/tutorial_notebooks/tutorial9/AE_CIFAR10.html (abgerufen: 25.10.22).
+
+Mitch Jablonski, Convolutional Autoencoder, udacity Github 2021,
+https://github.com/udacity/deep-learning-v2-pytorch/blob/master/autoencoder/convolutional-autoencoder/Convolutional_Autoencoder_Solution.ipynb (abgerufen: 25.10.22).
+
 Aditya Oke, Image Similarity Search in PyTorch, medium.com PyTorch,
 https://medium.com/pytorch/image-similarity-search-in-pytorch-1a744cf3469 (abgerufen: 12.10.22).
 
 Alin Cijov, Image Similarity Search in PyTorch, kaggle,
 https://www.kaggle.com/code/alincijov/image-similarity-search-in-pytorch (abgerufen: 12.10.22).
 
-#### Pretrained model:
+#### Pretrained model - Transfer Learning
 Sascha Heyer, How to Implement Image Similarity Using Deep Learning, medium.com Towards Data Science, 2022,
 https://towardsdatascience.com/image-similarity-with-deep-learning-c17d83068f59 (abgerufen: 12.10.22).
 

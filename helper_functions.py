@@ -4,7 +4,7 @@ import numpy as np
 
 
 # resize function to have the widest side being the var size and putting it on white bg
-def resize(img, size=100, bg_color=255):
+def resize(img, size=100, bg_color=0):
     # Set resize factors
     f1 = size / img.shape[0]
     f2 = size / img.shape[1]
@@ -22,7 +22,7 @@ def resize(img, size=100, bg_color=255):
     xoff = round((size - resized.shape[1]) / 2)
 
     # Combine the two
-    result = np.full((size, size, 3), bg_color, dtype = np.uint8)
+    result = np.full((size, size, 3), bg_color, dtype=np.uint8)
     result[yoff:yoff + resized.shape[0], xoff:xoff + resized.shape[1]] = resized
 
     return result

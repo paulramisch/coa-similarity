@@ -12,7 +12,7 @@ import warnings
 warnings.filterwarnings('ignore')
 
 # Load data
-coa_data = pd.read_csv('data/pca_training_data.csv')
+coa_data = pd.read_csv('data/training-data_40x40_rgb.csv')
 coa_data.head()
 
 # Img size: Square root of the number of columns, minus the label column (RGB)
@@ -53,4 +53,7 @@ def compare(img):
 
     return coa_data_sorted[['0', 'cos_distance']].head(10).to_numpy()
 
+# compare(coa_data[coa_data['0'] == '-1_G A lion cr..jpg'].index.values[0])
+# compare(coa_data[coa_data['0'] == '-1_G E chevron.jpg'].index.values[0])
+# compare(coa_data[coa_data['0'] == '-1_O B lion rampant.jpg'].index.values[0])
 compare(0)

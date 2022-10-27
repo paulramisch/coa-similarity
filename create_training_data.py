@@ -4,37 +4,54 @@ import cv2
 import pandas as pd
 import os
 import numpy as np
-from helper_functions import process_img_pca
+from helper_functions import process_img
+from joblib import Parallel, delayed
+from tqdm import tqdm
 
 # Variables
+number_or_parallel_jobs = 6
 img_import = 'data/coa'
-export = 'data/pca_training_data.csv'
-size = 100
+size = 40
+rgb = True
+export = 'data/training-data_{}x{}_{}.csv'.format(size, size, ("rgb" if rgb else "grey"))
 
-# Create dataframe for image vectors
-training_data = pd.DataFrame()
+# Function to iterate over images
+def transform_data(data):
 
-# Iterate over pictures
+    # Create dataframe for image vectors
+    transformed_list = []
+
+    for file in data:
+
+        # Check if file exists
+        if file.lower().endswith(('.png', 'jpg')):
+            # Load image
+            filepath = os.path.join(img_import, file)
+            img = cv2.imread(filepath)
+
+            if img is not None:
+                processed = process_img(img, size, color=rgb)
+
+                vec_df = pd.DataFrame([np.concatenate(([file], processed))])
+                transformed_list.append(vec_df)
+            else:
+                print('NoneType Error for', file)
+
+    transformed_data = pd.concat(transformed_list, axis=0)
+    return transformed_data
+
+
+# Split data in chunks of 30 images
+data_blocks = np.array_split(os.listdir(img_import), (len(os.listdir(img_import))/30))
+
+# Parallelize to process the images
 count = 0
-len_files = len(os.listdir(img_import))
-for file in os.listdir(img_import):
-    count += 1
+data_output = Parallel(n_jobs=number_or_parallel_jobs)(delayed(transform_data)(data) for data in tqdm(data_blocks))
+print('Parallel finished')
 
-    # Check if file exists
-    if file.lower().endswith(('.png', 'jpg')):
-        # Load image
-        filepath = os.path.join(img_import, file)
-        img = cv2.imread(filepath)
-
-        if img is not None:
-            print(round(count / len_files * 100), '% - Processing', file)
-            processed = process_img_pca(img, 100)
-
-            vec_df = pd.DataFrame([np.concatenate(([file], processed))])
-            training_data = pd.concat([training_data, vec_df], axis=0)
-        else:
-            print('NoneType Error for', file)
+# Combine data
+training_data = pd.concat(data_output, ignore_index=True)
 
 # Export Dataframe
 training_data.to_csv(export, index=False)
-print('Process finished')
+print('Process finished: File saved')
