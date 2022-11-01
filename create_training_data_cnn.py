@@ -11,7 +11,7 @@ from tqdm import tqdm
 # Variables
 number_or_parallel_jobs = 6
 img_import = 'data/coa'
-size = 96
+size = 128
 rgb = True
 export = 'data/coa_resized'
 

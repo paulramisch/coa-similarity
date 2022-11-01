@@ -26,13 +26,6 @@ class ConvEncoder(nn.Module):
         self.relu3 = nn.ReLU(inplace=True)
         self.maxpool3 = nn.MaxPool2d((2, 2))
 
-        self.conv4 = nn.Conv2d(64, 128, (3, 3), padding=(1, 1))
-        self.relu4 = nn.ReLU(inplace=True)
-        self.maxpool4 = nn.MaxPool2d((2, 2))
-
-        self.conv5 = nn.Conv2d(128, 256, (3, 3), padding=(1, 1))
-        self.relu5 = nn.ReLU(inplace=True)
-        self.maxpool5 = nn.MaxPool2d((2, 2))
 
     def forward(self, x):
         # Downscale the image with conv maxpool etc.
@@ -54,18 +47,6 @@ class ConvEncoder(nn.Module):
         x = self.maxpool3(x)
 
         # print(x.shape)
-
-        x = self.conv4(x)
-        x = self.relu4(x)
-        x = self.maxpool4(x)
-
-        # print(x.shape)
-
-        x = self.conv5(x)
-        x = self.relu5(x)
-        x = self.maxpool5(x)
-
-        # print(x.shape)
         return x
 
 
@@ -76,25 +57,17 @@ class ConvDecoder(nn.Module):
 
     def __init__(self):
         super().__init__()
-        self.deconv1 = nn.ConvTranspose2d(256, 128, (2, 2), stride=(2, 2))
+        self.deconv1 = nn.ConvTranspose2d(64, 32, (2, 2), stride=(2, 2))
         # self.upsamp1 = nn.UpsamplingBilinear2d(2)
         self.relu1 = nn.ReLU(inplace=True)
 
-        self.deconv2 = nn.ConvTranspose2d(128, 64, (2, 2), stride=(2, 2))
+        self.deconv2 = nn.ConvTranspose2d(32, 16, (2, 2), stride=(2, 2))
         # self.upsamp1 = nn.UpsamplingBilinear2d(2)
         self.relu2 = nn.ReLU(inplace=True)
 
-        self.deconv3 = nn.ConvTranspose2d(64, 32, (2, 2), stride=(2, 2))
+        self.deconv3 = nn.ConvTranspose2d(16, 3, (2, 2), stride=(2, 2))
         # self.upsamp1 = nn.UpsamplingBilinear2d(2)
         self.relu3 = nn.ReLU(inplace=True)
-
-        self.deconv4 = nn.ConvTranspose2d(32, 16, (2, 2), stride=(2, 2))
-        # self.upsamp1 = nn.UpsamplingBilinear2d(2)
-        self.relu4 = nn.ReLU(inplace=True)
-
-        self.deconv5 = nn.ConvTranspose2d(16, 3, (2, 2), stride=(2, 2))
-        # self.upsamp1 = nn.UpsamplingBilinear2d(2)
-        self.relu5 = nn.ReLU(inplace=True)
 
     def forward(self, x):
         # print(x.shape)
@@ -110,13 +83,6 @@ class ConvDecoder(nn.Module):
         x = self.relu3(x)
         # print(x.shape)
 
-        x = self.deconv4(x)
-        x = self.relu4(x)
-        # print(x.shape)
-
-        x = self.deconv5(x)
-        x = self.relu5(x)
-        # print(x.shape)
         return x
 
 

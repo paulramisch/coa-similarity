@@ -13,9 +13,10 @@ from sklearn.neighbors import NearestNeighbors
 import torchvision.transforms as T
 import os
 import cv2
-from PIL import Image
+from PIL import Image, ImageDraw, ImageFont
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
+import pickle
 
 
 def load_image_tensor(image_path, device):
@@ -25,17 +26,22 @@ def load_image_tensor(image_path, device):
     image_path: path to image to be loaded.
     device: "cuda" or "cpu"
     """
-    image_tensor = T.ToTensor()(Image.open(image_path))
+    image = Image.open(image_path)
+    image.thumbnail((config.IMG_WIDTH, config.IMG_HEIGHT))
+    img_processed = Image.new('RGB',  (config.IMG_WIDTH, config.IMG_HEIGHT), (0, 0, 0))
+    img_processed.paste(image, (int((config.IMG_WIDTH - image.width) / 2), int((config.IMG_HEIGHT - image.height) / 2)))
+
+    image_tensor = T.ToTensor()(img_processed)
     image_tensor = image_tensor.unsqueeze(0)
     # print(image_tensor.shape)
     # input_images = image_tensor.to(device)
     return image_tensor
 
 
-def compute_similar_images(image_path, num_images, embedding, device):
+def compute_similar_images(image_path, num_images, embedding, device, img_dict):
     """
     Given an image and number of similar images to generate.
-    Returns the num_images closest neares images.
+    Returns the num_images closest nearest images.
 
     Args:
     image_path: Path to image whose similar images are to be found.
@@ -58,32 +64,82 @@ def compute_similar_images(image_path, num_images, embedding, device):
     knn = NearestNeighbors(n_neighbors=num_images, metric="cosine")
     knn.fit(embedding)
 
-    _, indices = knn.kneighbors(flattened_embedding)
-    indices_list = indices.tolist()
-    # print(indices_list)
-    return indices_list
+    distances, indices  = knn.kneighbors(flattened_embedding)
+
+    image_list = []
+    for idx, indice in enumerate(indices[0]):
+        if indice != 0:
+            # index 0 is a dummy embedding.
+            img_name = str(img_dict.get(indice - 1))
+            image_list.append([img_name, distances[0][idx]])
+
+    return image_list
 
 
-def plot_similar_images(indices_list):
+def plot_similar_images(img_list):
     """
     Plots images that are similar to indices obtained from computing simliar images.
     Args:
-    indices_list : List of List of indexes. E.g. [[1, 2, 3]]
+    img_list : List of List of all images. E.g. [[1, 2, 3]]
     """
 
-    indices = indices_list[0]
-    for index in indices:
-        if index == 0:
-            # index 0 is a dummy embedding.
-            pass
-        else:
-            img_name = str(index - 1) + ".jpg"
-            img_path = os.path.join(config.DATA_PATH + img_name)
+    for image in img_list:
+            img_path = os.path.join(config.DATA_PATH + image[0])
             # print(img_path)
             img = Image.open(img_path).convert("RGB")
             plt.imshow(img)
             plt.show()
-            img.save(f"../outputs/query_image_3/recommended_{index - 1}.jpg")
+            # img.save(f"../data/outputs/recommended_{index - 1}.jpg")
+
+
+def plot_similar_images_grid(query, img_list, title='', sim_path=config.DATA_PATH, img_size=config.IMG_HEIGHT):
+    # Size of the img based on the number of given images
+    padding = int(img_size / 8)
+    img_size_padded = int(img_size + 2 * padding)
+    grid_size = int(np.ceil(len(img_list) / 5))
+    grid_height = int((img_size_padded + padding) * grid_size + padding * 6) if grid_size > 1 else int(img_size_padded * 2 + padding * 6)
+    grid_width = 7*img_size_padded + 2*padding
+
+    # Create the background
+    grid = Image.new('RGB',  (grid_width, grid_height), (255, 255, 255))
+
+    # Prepare to draw text
+    draw = ImageDraw.Draw(grid)
+    def font(size):
+        return ImageFont.truetype("Arial.ttf", size=int(size))
+
+    # Add query image
+    query_img_size = 2*img_size + 3*padding
+    querry_img = Image.open(query)
+    querry_img.thumbnail((query_img_size, query_img_size))
+    grid.paste(querry_img, (padding, 5*padding))
+
+    # Add titles
+    draw.text((padding, padding), title, font=font(padding * 1.6), fill = (0, 0, 0))
+    draw.text((padding, padding * 3), 'Query', font=font(padding*1.4), fill=(0, 0, 0))
+    draw.text((query_img_size + 4 * padding, padding * 3), "Similar images", font=font(padding * 1.4), fill=(0, 0, 0))
+
+    # Create list of positions
+    positions = []
+    for y in range(0, grid_size):
+        for x in range(0, 5):
+            pos_x = int(query_img_size + 4 * padding + x * img_size_padded)
+            pox_y = int(5*padding + y * (img_size_padded + padding))
+            positions.append((pos_x, pox_y))
+
+    # Add the similar images to grid
+    for idx, sim_img in enumerate(img_list):
+        img = Image.open(sim_path+sim_img[0])
+        img.thumbnail((img_size, img_size))
+        grid.paste(img, (positions[idx][0], positions[idx][1]))
+
+        # Add title
+        text_pos_y = int(positions[idx][1] + img_size + padding*0.6)
+        img_title = sim_img[0] if len(sim_img[0]) < 20 else sim_img[0][:20]+"..."
+        draw.text((positions[idx][0], text_pos_y), img_title, font=font(padding * 0.8), fill=(0, 0, 0))
+        draw.text((positions[idx][0], text_pos_y + padding), str(round(sim_img[1],6)), font=font(padding*0.8), fill=(50, 50, 50))
+
+    grid.show()
 
 
 def compute_similar_features(image_path, num_images, embedding, nfeatures=30):
@@ -120,11 +176,16 @@ def compute_similar_features(image_path, num_images, embedding, nfeatures=30):
 
     knn = NearestNeighbors(n_neighbors=num_images, metric="cosine")
     knn.fit(reduced_embedding)
-    _, indices = knn.kneighbors(des)
+    distances, indices  = knn.kneighbors(des)
 
-    indices_list = indices.tolist()
-    # print(indices_list)
-    return indices_list
+    image_list = []
+    for idx, indice in enumerate(indices[0]):
+        if indice != 0:
+            # index 0 is a dummy embedding.
+            img_name = str(img_dict.get(indice - 1))
+            image_list.append([img_name, distances[0][idx]])
+
+    return image_list
 
 
 if __name__ == "__main__":
@@ -138,12 +199,20 @@ if __name__ == "__main__":
     encoder.eval()
     encoder.to(device)
 
+    # Load the img name dict:
+    with open(config.IMG_DICT_PATH, 'rb') as f:
+        img_dict = pickle.load(f)
+
     # Loads the embedding
     embedding = np.load(config.EMBEDDING_PATH)
 
-    indices_list = compute_similar_images(
-        config.TEST_IMAGE_PATH, config.NUM_IMAGES, embedding, device
-    )
-    plot_similar_images(indices_list)
-    indices_list = compute_similar_features(config.TEST_IMAGE_PATH, 5, embedding)
-    plot_similar_images(indices_list)
+
+    # test_img_path = config.TEST_IMAGE_PATH
+
+    test_img_path = '../data/test_data/-1_G A lion cr..jpg'
+    image_list = compute_similar_images(test_img_path, config.NUM_IMAGES, embedding, device, img_dict)
+    plot_similar_images_grid(test_img_path, image_list, 'CNN-Model')
+
+    image_list = compute_similar_features(test_img_path, config.NUM_IMAGES, embedding)
+    plot_similar_images_grid(test_img_path, image_list, 'CNN-Model')
+

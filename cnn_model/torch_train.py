@@ -26,7 +26,7 @@ if __name__ == "__main__":
 
     transforms = T.Compose([T.ToTensor()])
     print("------------ Creating Dataset ------------")
-    full_dataset = torch_data.FolderDataset(config.IMG_PATH, transforms)
+    full_dataset = torch_data.FolderDataset(config.IMG_PATH, config.IMG_DICT_PATH, transforms)
 
     train_size = int(config.TRAIN_RATIO * len(full_dataset))
     val_size = len(full_dataset) - train_size
