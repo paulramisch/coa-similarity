@@ -1,7 +1,57 @@
 # Helper functions
 import cv2
 import numpy as np
+from PIL import Image, ImageDraw, ImageFont
 
+# Funktion zum ploten der Ergebnisse
+def plot_similar_images_grid(query, img_list, title='', sim_path='data/coa/', img_size=128):
+    # Size of the img based on the number of given images
+    padding = int(img_size / 8)
+    img_size_padded = int(img_size + 2 * padding)
+    grid_size = int(np.ceil(len(img_list) / 5))
+    grid_height = int((img_size_padded + padding) * grid_size + padding * 6) if grid_size > 1 else int(img_size_padded * 2 + padding * 6)
+    grid_width = 7*img_size_padded + 2*padding
+
+    # Create the background
+    grid = Image.new('RGB',  (grid_width, grid_height), (255, 255, 255))
+
+    # Prepare to draw text
+    draw = ImageDraw.Draw(grid)
+    def font(size):
+        return ImageFont.truetype("Arial.ttf", size=int(size))
+
+    # Add query image
+    query_img_size = 2*img_size + 3*padding
+    querry_img = Image.open(query)
+    querry_img.thumbnail((query_img_size, query_img_size))
+    grid.paste(querry_img, (padding, 5*padding))
+
+    # Add titles
+    draw.text((padding, padding), title, font=font(padding * 1.6), fill = (0, 0, 0))
+    draw.text((padding, padding * 3), 'Query', font=font(padding*1.4), fill=(0, 0, 0))
+    draw.text((query_img_size + 4 * padding, padding * 3), "Similar images", font=font(padding * 1.4), fill=(0, 0, 0))
+
+    # Create list of positions
+    positions = []
+    for y in range(0, grid_size):
+        for x in range(0, 5):
+            pos_x = int(query_img_size + 4 * padding + x * img_size_padded)
+            pox_y = int(5*padding + y * (img_size_padded + padding))
+            positions.append((pos_x, pox_y))
+
+    # Add the similar images to grid
+    for idx, sim_img in enumerate(img_list):
+        img = Image.open(sim_path+sim_img[0])
+        img.thumbnail((img_size, img_size))
+        grid.paste(img, (positions[idx][0], positions[idx][1]))
+
+        # Add title
+        text_pos_y = int(positions[idx][1] + img_size + padding*0.6)
+        img_title = sim_img[0] if len(sim_img[0]) < 20 else sim_img[0][:20]+"..."
+        draw.text((positions[idx][0], text_pos_y), img_title, font=font(padding * 0.8), fill=(0, 0, 0))
+        draw.text((positions[idx][0], text_pos_y + padding), str(round(sim_img[1],6)), font=font(padding*0.8), fill=(50, 50, 50))
+
+    return grid
 
 # resize function to have the widest side being the var size and putting it on white bg
 def resize(img, size=100, bg_color=0):

@@ -10,51 +10,56 @@ import cv2
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from scipy.spatial import distance
-from helper_functions import process_img
+from helper_functions import process_img, plot_similar_images_grid
 import warnings
 warnings.filterwarnings('ignore')
 
-# Load data
-coa_data = pd.read_csv('data/training-data_100x100_rgb.csv')
-
-# Img size: Square root of the number of columns, minus the label column (RGB)
-# If greyscale: size = int((coa_data.shape[1] - 1) ** (1/2))
-size = int(((coa_data.shape[1] - 1) / 3) ** (1/2))
-
-# Data prep
-coa_data_img = coa_data.drop('0', axis=1)
-coa_data_labels = coa_data['0']
-
-# PCA
-# pca = PCA().fit(coa_data_img)
-
-# Visual analysis of the number of needed variables
-# plt.figure(figsize=(18, 7))
-# plt.plot(pca.explained_variance_ratio_.cumsum(), lw=3)
-# plt.show()
-# len(np.where(pca.explained_variance_ratio_.cumsum() < 0.99)[0])
-
-# Training with component number based on analysis
-pca = PCA(n_components=20).fit(coa_data_img)
-
-
 # Transform images into feature vectors
-def create_feature(images):
+def create_feature(images, pca):
     return pca.transform(images)
 
 
-pca_features = create_feature(coa_data_img)
+def train_pca_model(coa_data):
+    # Img size: Square root of the number of columns, minus the label column (RGB)
+    # If greyscale: size = int((coa_data.shape[1] - 1) ** (1/2))
+    size = int(((coa_data.shape[1] - 1) / 3) ** (1/2))
+
+    # Data prep
+    coa_data_img = coa_data.drop('0', axis=1)
+    coa_data_labels = coa_data['0']
+
+    # PCA
+    # pca = PCA().fit(coa_data_img)
+
+    # Visual analysis of the number of needed variables
+    # plt.figure(figsize=(18, 7))
+    # plt.plot(pca.explained_variance_ratio_.cumsum(), lw=3)
+    # plt.show()
+    # len(np.where(pca.explained_variance_ratio_.cumsum() < 0.99)[0])
+
+    # Training with component number based on analysis
+    pca = PCA(n_components=20).fit(coa_data_img)
+
+    pca_features = create_feature(coa_data_img, pca)
+    return pca, pca_features, size
+
+
+# Easy function to plot most similar images
+def plot_most_similar(pixels):
+    fig, axes = plt.subplots(1, 5, figsize=(6, 2))
+    for i, ax in enumerate(axes.flat):
+        ax.imshow(np.array(pixels)[i].reshape(size, size, 3))
+    plt.show()
+
+
+# Function to plot the grid view
+def plot_similar_pca(query, coa_data, pca, pca_features, size):
+    image_list = compare(query, coa_data, pca, pca_features, size)
+    return plot_similar_images_grid(query, image_list, 'PCA-Model')
 
 
 # Function to compare
-def compare(img_src):
-    # Function to plot most similiar images
-    def plot_most_similar(pixels):
-        fig, axes = plt.subplots(1, 5, figsize=(6, 2))
-        for i, ax in enumerate(axes.flat):
-            ax.imshow(np.array(pixels)[i].reshape(size, size, 3))
-        plt.show()
-
+def compare(img_src, coa_data, pca, pca_features, size):
     # Load image
     img = cv2.imread(img_src)
 
@@ -65,7 +70,7 @@ def compare(img_src):
     coa_df = pd.DataFrame([np.concatenate((['coa'], coa))]).drop(0, axis=1)
 
     # Extract features
-    img_features = create_feature(coa_df)
+    img_features = create_feature(coa_df, pca)
 
     # Cosine distance comparison
     similar_idx = [ distance.cosine(img_features[0], feat) for feat in pca_features ]
@@ -76,8 +81,16 @@ def compare(img_src):
     coa_data_sorted = coa_data_sorted.sort_values('cos_distance')
 
     # Plot most similar images
-    plot_most_similar(coa_data_sorted.drop(['0', 'cos_distance'], axis=1))
+    # plot_most_similar(coa_data_sorted.drop(['0', 'cos_distance'], axis=1))
 
     return coa_data_sorted[['0', 'cos_distance']].head(10).to_numpy()
 
-compare('data/test_data/1.png')
+if __name__ == "__main__":
+    # Load data
+    coa_data = pd.read_csv('data/training-data_100x100_rgb.csv')
+
+    # Train model
+    pca, pca_features, size = train_pca_model(coa_data)
+
+    # Compare image
+    compare('data/test_data/1.png', coa_data, pca, pca_features, size)

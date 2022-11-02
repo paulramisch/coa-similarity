@@ -1,6 +1,10 @@
 # Coat of Arms similarity
 Evaluation of different ML techniques to measure the similarity of Coat of Arms
 
+# Todos
+[] Erstellung eines notebooks
+[] 
+
 ## Methoden
 - PCA: Principal Component Analysis 
 Unsupervised Learning Technik um Dimensionalität von Daten zu reduzieren, mithilfe von orthogonal linear transformation (Kumar 2019)
@@ -10,6 +14,8 @@ Wie PCA zur Reduktion der Dimensionalität von Daten, aber mit non-linear dimens
 Vorteil offenbar: Fokus auf lokale Ähnlichkeiten
 - UMAP
 Ebenfalls Technik zur Dimenionsionalitätsreduktion, aber 
+- CNN
+
 
 Dinge, dich noch zu tun sind: https://www.geeksforgeeks.org/how-to-normalize-images-in-pytorch/
 Bei PCA zu beachten: Bildausschnitte müssen gut gewählt sein; also Wappen mitting & ähnlich viel Hintergrund; gleiche Auflösung

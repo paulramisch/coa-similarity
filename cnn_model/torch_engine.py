@@ -91,8 +91,8 @@ def create_embedding(encoder, full_loader, embedding_dim, device):
 
     with torch.no_grad():
         for batch_idx, (train_img, target_img) in enumerate(full_loader):
-            train_img = train_img.to(device)
-            enc_output = encoder(train_img).cpu()
+            target_img = target_img.to(device)
+            enc_output = encoder(target_img).cpu()
             # print(enc_output.shape)
             # print(embedding.shape)
             embedding = torch.cat((embedding, enc_output), 0)

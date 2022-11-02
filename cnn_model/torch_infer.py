@@ -5,10 +5,10 @@ __all__ = [
     "plot_similar_images",
 ]
 
-import config
 import torch
 import numpy as np
-import torch_model
+import cnn_model.config as config
+import cnn_model.torch_model as torch_model
 from sklearn.neighbors import NearestNeighbors
 import torchvision.transforms as T
 import os
@@ -31,14 +31,15 @@ def load_image_tensor(image_path, device):
     img_processed = Image.new('RGB',  (config.IMG_WIDTH, config.IMG_HEIGHT), (0, 0, 0))
     img_processed.paste(image, (int((config.IMG_WIDTH - image.width) / 2), int((config.IMG_HEIGHT - image.height) / 2)))
 
-    image_tensor = T.ToTensor()(img_processed)
-    image_tensor = image_tensor.unsqueeze(0)
+    transforms = T.Compose([T.ToTensor()])
+    image_tensor = transforms(img_processed).unsqueeze(0)
+
     # print(image_tensor.shape)
     # input_images = image_tensor.to(device)
     return image_tensor
 
 
-def compute_similar_images(image_path, num_images, embedding, device, img_dict):
+def compute_similar_images(image_path, num_images, embedding, encoder, device, img_dict):
     """
     Given an image and number of similar images to generate.
     Returns the num_images closest nearest images.
@@ -139,7 +140,7 @@ def plot_similar_images_grid(query, img_list, title='', sim_path=config.DATA_PAT
         draw.text((positions[idx][0], text_pos_y), img_title, font=font(padding * 0.8), fill=(0, 0, 0))
         draw.text((positions[idx][0], text_pos_y + padding), str(round(sim_img[1],6)), font=font(padding*0.8), fill=(50, 50, 50))
 
-    grid.show()
+    return grid
 
 
 def compute_similar_features(image_path, num_images, embedding, nfeatures=30):
@@ -176,7 +177,7 @@ def compute_similar_features(image_path, num_images, embedding, nfeatures=30):
 
     knn = NearestNeighbors(n_neighbors=num_images, metric="cosine")
     knn.fit(reduced_embedding)
-    distances, indices  = knn.kneighbors(des)
+    distances, indices = knn.kneighbors(des)
 
     image_list = []
     for idx, indice in enumerate(indices[0]):
@@ -187,10 +188,7 @@ def compute_similar_features(image_path, num_images, embedding, nfeatures=30):
 
     return image_list
 
-
-if __name__ == "__main__":
-    # Loads the model
-
+def set_vars(src_encoder=config.ENCODER_MODEL_PATH, src_dict=config.IMG_DICT_PATH, src_embedding=config.EMBEDDING_PATH):
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     encoder = torch_model.ConvEncoder()
 
@@ -206,13 +204,36 @@ if __name__ == "__main__":
     # Loads the embedding
     embedding = np.load(config.EMBEDDING_PATH)
 
+    return encoder, img_dict, embedding, device
 
-    # test_img_path = config.TEST_IMAGE_PATH
+def plot_similar_cnn(query, embedding, encoder, device, img_dict):
+    image_list = compute_similar_images(query, config.NUM_IMAGES, embedding, encoder, device, img_dict)
+    return plot_similar_images_grid(query, image_list, 'CNN-Model')
 
-    test_img_path = '../data/test_data/-1_G A lion cr..jpg'
-    image_list = compute_similar_images(test_img_path, config.NUM_IMAGES, embedding, device, img_dict)
-    plot_similar_images_grid(test_img_path, image_list, 'CNN-Model')
+if __name__ == "__main__":
+    encoder, img_dict, embedding, device = set_vars()
 
-    image_list = compute_similar_features(test_img_path, config.NUM_IMAGES, embedding)
-    plot_similar_images_grid(test_img_path, image_list, 'CNN-Model')
+    examples = ['-1_O B lion rampant.jpg',
+                '6167_G O 2 barbels addorsed.jpg',
+                '22351_G E 3 chevrons.jpg',
+                '7807_G OOB 2 barbels addorsed, trefly & label.jpg',
+                '9177_O G 2 bars of lozenges.jpg',
+                '10449_G O 2 barbels addorsed.jpg',
+                "-1_A G 2 bear's heads addorsed.jpg",
+                '69_O G chief.jpg',
+                '4808_A G barry undy.jpg',
+                '6167_G O 2 barbels addorsed.jpg',
+                '6614_O G 4 pales.jpg',
+                '8363_ 3 fleurs-de-lis; 3 lions passt guard; =; =  {BO, GO}.jpg',
+                '32013_B A lion rampant.jpg']
+
+    for img in examples:
+        plot_similar_cnn('../data/coa/' + img, embedding, encoder, device, img_dict)
+
+    plot_similar_cnn('../data/edge_cases/7807_edited.jpg', embedding, encoder, device, img_dict)
+
+    print("Hello")
+
+    # image_list = compute_similar_features(test_img_path, config.NUM_IMAGES, embedding)
+    # plot_similar_images_grid(test_img_path, image_list, 'CNN-Model')
 

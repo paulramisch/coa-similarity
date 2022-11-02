@@ -17,10 +17,12 @@ class FolderDataset(Dataset):
     transform (optional) : torchvision transforms to be applied while making dataset
     """
 
-    def __init__(self, main_dir, IMG_DICT_PATH, transform=None):
+    def __init__(self, main_dir, IMG_DICT_PATH, transform_in=None, transform_out=None, tensor_dim=128):
         self.main_dir = main_dir
-        self.transform = transform
+        self.transform_in = transform_in
+        self.transform_out = transform_out
         self.all_imgs = os.listdir(main_dir)
+        self.tensor_dim = tensor_dim
 
         # Create img name dictionary
         self.dict = {}
@@ -35,9 +37,20 @@ class FolderDataset(Dataset):
 
     def __getitem__(self, idx):
         img_loc = os.path.join(self.main_dir, self.all_imgs[idx])
+
         image = Image.open(img_loc).convert("RGB")
+        image_out = image.copy()
 
-        if self.transform is not None:
-            tensor_image = self.transform(image)
+        size_pre = 132
+        image.thumbnail((size_pre, size_pre))
+        img_processed = Image.new('RGB', (size_pre, size_pre), (0, 0, 0))
+        img_processed.paste(image, (int((size_pre - image.width) / 2), int((size_pre - image.height) / 2)))
+        tensor_image_in = self.transform_in(img_processed)
 
-        return tensor_image, tensor_image
+        # Out image
+        image_out.thumbnail((self.tensor_dim, self.tensor_dim))
+        img_processed_out = Image.new('RGB',  (self.tensor_dim, self.tensor_dim), (0, 0, 0))
+        img_processed_out.paste(image_out, (int((self.tensor_dim - image_out.width) / 2), int((self.tensor_dim - image_out.height) / 2)))
+        tensor_image_out = self.transform_out(img_processed_out)
+
+        return tensor_image_in, tensor_image_out

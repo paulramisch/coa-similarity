@@ -1,16 +1,16 @@
 # Training script for Auto-Encoder.
 
 import torch
-import torch_model
-import torch_engine
+import cnn_model.torch_model
+import cnn_model.torch_engine
+import cnn_model.torch_data
+import cnn_model.utils
 import torchvision.transforms as T
-import torch_data
-import config
+import cnn_model.config
 import numpy as np
 from tqdm import tqdm
 import torch.nn as nn
 import torch.optim as optim
-import utils
 
 if __name__ == "__main__":
     if torch.cuda.is_available():
@@ -24,9 +24,19 @@ if __name__ == "__main__":
 
     utils.seed_everything(config.SEED)
 
-    transforms = T.Compose([T.ToTensor()])
+    transforms_in = T.Compose([T.RandomRotation(degrees=(-5, 5)),
+                               # T.RandomPerspective(distortion_scale=0.05, p=1.0),
+                               T.RandomCrop(size=(128, 128)),
+                               T.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 5)),
+                               T.ColorJitter(brightness=.3, hue=.1),
+                               # T.Grayscale(3),
+                               T.ToTensor()
+                               ])
+    transforms_out = T.Compose([# T.Grayscale(3),
+                                T.ToTensor()])
+
     print("------------ Creating Dataset ------------")
-    full_dataset = torch_data.FolderDataset(config.IMG_PATH, config.IMG_DICT_PATH, transforms)
+    full_dataset = torch_data.FolderDataset(config.IMG_PATH, config.IMG_DICT_PATH, transforms_in, transforms_out)
 
     train_size = int(config.TRAIN_RATIO * len(full_dataset))
     val_size = len(full_dataset) - train_size
@@ -86,6 +96,7 @@ if __name__ == "__main__":
 
         # Simple Best Model saving
         if val_loss < max_loss:
+            max_loss = val_loss
             print("Validation Loss decreased, saving new best model")
             torch.save(encoder.state_dict(), config.ENCODER_MODEL_PATH)
             torch.save(decoder.state_dict(), config.DECODER_MODEL_PATH)
