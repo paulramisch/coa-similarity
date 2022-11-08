@@ -12,16 +12,22 @@ from helper_functions import plot_similar_images_grid
 import warnings
 warnings.filterwarnings('ignore')
 
-def train_tsne_model(coa_data, n_components=3, learning_rate=150, perplexity=30, angle=0.2):
-    coa_data.head()
+def train_tsne_model(coa_data, n_components=3, pca=False, pca_comp=138, learning_rate=150, perplexity=30, angle=0.2, ):
+    if pca:
+        # PCA anwenden
+        pca, pca_features, size = train_pca_model(coa_data, False, pca_comp)
 
+        # Output transformieren für Input in TSNE
+        df_pca_features = pd.DataFrame(pca_features, columns = range(1, pca_features.shape[1] + 1))
+        coa_data = coa_data[['0']].join(df_pca_features)
+    
     # Img size: Square root of the number of columns, minus the label column (RGB)
     # If greyscale: size = int((coa_data.shape[1] - 1) ** (1/2))
     size = int(((coa_data.shape[1] - 1) / 3) ** (1/2))
 
     # Data prep
-    coa_data_img = coa_data.drop('0', axis=1)
-    coa_data_labels = coa_data['0']
+    coa_data_img = coa_data.copy().drop('0', axis=1)
+    coa_data_labels = coa_data[['0']].copy()
 
     # TSNE
     # https://github.com/ml4a/ml4a/blob/master/examples/info_retrieval/image-tsne.ipynb
@@ -48,19 +54,19 @@ def plot_similar_tsne(query, tsne_result, coa_data, path):
 
 
 # Function to compare
-def compare_tsne(img, tsne_result, coa_data):
+def compare_tsne(img, tsne_result, coa_data, num=10):
     # Cosine distance comparison
     similar_idx = [ distance.cosine(tsne_result[img], feat) for feat in tsne_result ]
 
     # Add cos distance to data
-    coa_data_sorted = coa_data
+    coa_data_sorted = coa_data[['0']].copy()
     coa_data_sorted['cos_distance'] = similar_idx
     coa_data_sorted = coa_data_sorted.sort_values('cos_distance')
 
     # Plot most similar images
     # plot_most_similar(coa_data_sorted.drop(['0', 'cos_distance'], axis=1), size)
 
-    return coa_data_sorted[['0', 'cos_distance']].head(10).to_numpy()
+    return coa_data_sorted[['0', 'cos_distance']].head(num).to_numpy()
 
 
 if __name__ == "__main__":

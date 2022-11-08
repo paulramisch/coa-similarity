@@ -19,26 +19,22 @@ def create_feature(images, pca):
     return pca.transform(images)
 
 
-def train_pca_model(coa_data):
+def train_pca_model(coa_data, components_all=False, components=20):
     # Img size: Square root of the number of columns, minus the label column (RGB)
     # If greyscale: size = int((coa_data.shape[1] - 1) ** (1/2))
     size = int(((coa_data.shape[1] - 1) / 3) ** (1/2))
 
     # Data prep
-    coa_data_img = coa_data.drop('0', axis=1)
-    coa_data_labels = coa_data['0']
-
+    coa_data_img = coa_data.copy().drop('0', axis=1)
+    coa_data_labels = coa_data[['0']].copy()
+	
+	
     # PCA
-    # pca = PCA().fit(coa_data_img)
-
-    # Visual analysis of the number of needed variables
-    # plt.figure(figsize=(18, 7))
-    # plt.plot(pca.explained_variance_ratio_.cumsum(), lw=3)
-    # plt.show()
-    # len(np.where(pca.explained_variance_ratio_.cumsum() < 0.99)[0])
-
-    # Training with component number based on analysis
-    pca = PCA(n_components=20).fit(coa_data_img)
+    if components_all:
+        pca = PCA().fit(coa_data_img)
+    else:
+        # Training with component number based on analysis
+        pca = PCA(n_components=components).fit(coa_data_img)
 
     pca_features = create_feature(coa_data_img, pca)
     return pca, pca_features, size
@@ -76,7 +72,7 @@ def compare(img_src, coa_data, pca, pca_features, size):
     similar_idx = [ distance.cosine(img_features[0], feat) for feat in pca_features ]
 
     # Add cos distance to data
-    coa_data_sorted = coa_data
+    coa_data_sorted = coa_data[['0']].copy()
     coa_data_sorted['cos_distance'] = similar_idx
     coa_data_sorted = coa_data_sorted.sort_values('cos_distance')
 

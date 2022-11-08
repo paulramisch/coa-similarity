@@ -53,6 +53,35 @@ def plot_similar_images_grid(query, img_list, title='', sim_path='data/coa/', im
 
     return grid
 
+# Funktion um mehere Plots zu plotten
+def plot_plots(img_list, title=''):
+    # Size of the img based on the number of given images
+    width = img_list[0].width 
+    height = img_list[0].height
+    
+    grid_size = int(np.ceil(len(img_list) / 2))
+    grid_height = int(height * grid_size)
+    grid_width = int(width*2)
+
+    # Create the background
+    grid = Image.new('RGB',  (grid_width, grid_height), (255, 255, 255))
+
+    # Create list of positions
+    positions = []
+    for y in range(0, grid_size):
+        for x in range(0, 2):
+            pos_x = int(x * width)
+            pox_y = int(y * height)
+            positions.append((pos_x, pox_y))
+
+    # Add the similar images to grid
+    for idx, sim_img in enumerate(img_list):
+        img = img_list[idx]
+        img.thumbnail((width, height))
+        grid.paste(img, (positions[idx][0], positions[idx][1]))
+
+    return grid
+
 # resize function to have the widest side being the var size and putting it on white bg
 def resize(img, size=100, bg_color=0):
     # Set resize factors

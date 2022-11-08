@@ -1,6 +1,31 @@
 # Coat of Arms similarity
 Evaluation of different ML techniques to measure the similarity of Coat of Arms
 
+PCA
+TSNE
+UMAP
+CNN: Welche Funktion haben die verschiedenen Layer
+
+Evtl. bei Sebastian Kiel nachfragen, Retina-Net, CNN für Drehungen, evtl. verschiedene geometrische Strukturen
+evtl. für Drehung
+
+Aktuell annotierter Stand, Farbbias
+Styletransfer zu CNN um Trainingsdaten zu generieren; 15.000, ggf. tilten
+Frage an Sebastian, wie weit ist die Richtung wichtig
+
+Trainingsdatenderivate generieren 
+
+Problem: Ähnlichkeit zwischen gedrehten Bild
+Modell Training mit CNN
+
+Welche Architektur fürs Training? Yolo 4
+
+
+Decoder:
+- Bild
++ Dateinummer
+
+
 # Todos
 [] Erstellung eines notebooks
 [] 

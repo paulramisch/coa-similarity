@@ -24,8 +24,8 @@ def train_umap_model(coa_data, n_neighbors=100, min_dist=0.3, n_components=30):
     size = int(((coa_data.shape[1] - 1) / 3) ** (1/2))
 
     # Data prep
-    coa_data_img = coa_data.drop('0', axis=1) / 255
-    coa_data_labels = coa_data['0']
+    coa_data_img = coa_data.copy().drop('0', axis=1) / 257
+    coa_data_labels = coa_data[['0']].copy()
 
     # UMAP
     # For parameters: https://umap.scikit-tda.org/parameters.html
@@ -43,13 +43,13 @@ def plot_most_similar(pixels, size):
 
 
 # Function to plot the grid view
-def plot_similar_umap(query, trans, size):
-    image_list = compare_umap(query, trans, size)
+def plot_similar_umap(query, trans, coa_data, size):
+    image_list = compare_umap(query, trans, coa_data, size)
     return plot_similar_images_grid(query, image_list, 'UMAP-Model')
 
 
 # Function to compare
-def compare_umap(img_src, trans, size):
+def compare_umap(img_src, trans, coa_data, size):
     # Load image
     img = cv2.imread(img_src)
 
@@ -66,7 +66,7 @@ def compare_umap(img_src, trans, size):
     similar_idx = [distance.euclidean(img_features[0], feat) for feat in trans.embedding_]
 
     # Add cos distance to data
-    coa_data_sorted = coa_data
+    coa_data_sorted = coa_data[['0']].copy()
     coa_data_sorted['euc_distance'] = similar_idx
     coa_data_sorted = coa_data_sorted.sort_values('euc_distance')
 
@@ -78,7 +78,7 @@ def compare_umap(img_src, trans, size):
 
 if __name__ == "__main__":
     # Load data
-    coa_data = pd.read_csv('data/training-data_40x40_rgb.csv')
+    coa_data = pd.read_csv('data/training-data_100x100_rgb.csv')
     trans, size = train_umap_model(coa_data)
 
     compare_umap('data/test_data/-1_G A lion cr..jpg', trans, size)
