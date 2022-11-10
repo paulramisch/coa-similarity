@@ -1,12 +1,12 @@
 # Training script for Auto-Encoder.
 
 import torch
-import cnn_model.torch_model
-import cnn_model.torch_engine
-import cnn_model.torch_data
-import cnn_model.utils
+import cnn_model.torch_model as torch_model
+import cnn_model.torch_engine as torch_engine
+import cnn_model.torch_data as torch_data
+import cnn_model.utils as utils
 import torchvision.transforms as T
-import cnn_model.config
+import cnn_model.config as config
 import numpy as np
 from tqdm import tqdm
 import torch.nn as nn
