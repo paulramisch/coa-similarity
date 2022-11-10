@@ -31,3 +31,7 @@ for idx, test in enumerate(test_data):
 print(f"{MODEL_NAME} score: {score}, secondary score: {score_secondary}")
 # _transformed score: 11, secondary score: 5
 # _stn: 4, secondary: 1
+
+# Epochs = 7, Training Loss : 0.03284949064254761
+# Validation Loss decreased, saving new best model
+# Epochs = 7, Validation Loss : 0.035060491412878036

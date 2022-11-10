@@ -21,8 +21,14 @@ class FolderDataset(Dataset):
         self.main_dir = main_dir
         self.transform_in = transform_in
         self.transform_out = transform_out
-        self.all_imgs = os.listdir(main_dir)
         self.tensor_dim = tensor_dim
+
+        # Filter files by type
+        self.all_imgs = []
+        for file in os.listdir(main_dir):
+            # check only text files
+            if file.lower().endswith(('.png', 'jpg')):
+                self.all_imgs.append(file)
 
         # Create img name dictionary
         self.dict = {}
