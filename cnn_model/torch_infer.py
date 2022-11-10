@@ -193,16 +193,16 @@ def set_vars(src_encoder=config.ENCODER_MODEL_PATH, src_dict=config.IMG_DICT_PAT
     encoder = torch_model.ConvEncoder()
 
     # Load the state dict of encoder
-    encoder.load_state_dict(torch.load(config.ENCODER_MODEL_PATH, map_location=device))
+    encoder.load_state_dict(torch.load(src_encoder, map_location=device))
     encoder.eval()
     encoder.to(device)
 
     # Load the img name dict:
-    with open(config.IMG_DICT_PATH, 'rb') as f:
+    with open(src_dict, 'rb') as f:
         img_dict = pickle.load(f)
 
     # Loads the embedding
-    embedding = np.load(config.EMBEDDING_PATH)
+    embedding = np.load(src_embedding)
 
     return encoder, img_dict, embedding, device
 
