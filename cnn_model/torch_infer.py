@@ -130,8 +130,15 @@ def plot_similar_images_grid(query, img_list, title='', sim_path=config.DATA_PAT
 
     # Add the similar images to grid
     for idx, sim_img in enumerate(img_list):
-        img = Image.open(sim_path+sim_img[0])
-        img.thumbnail((img_size, img_size))
+        try:
+            img = Image.open(sim_path+sim_img[0])
+            img.thumbnail((img_size, img_size))
+        except:
+            print("An exception occurred: Image not found")
+            img = Image.new('RGB',  (img_size, img_size), (180, 180, 180))
+            size = int(img_size/10)
+            ImageDraw.Draw(img).text((size, size), 'Image Loading Error', font=ImageFont.truetype("Arial.ttf", size=size), fill=(0, 0, 0))
+
         grid.paste(img, (positions[idx][0], positions[idx][1]))
 
         # Add title

@@ -26,9 +26,9 @@ if __name__ == "__main__":
 
     transforms_in = T.Compose([T.RandomRotation(degrees=(-5, 5)),
                                # T.RandomPerspective(distortion_scale=0.05, p=1.0),
-                               T.RandomCrop(size=(128, 128)),
-                               T.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 5)),
-                               T.ColorJitter(brightness=.3, hue=.1),
+                               # T.RandomCrop(size=(128, 128)),
+                               # T.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 5)),
+                               # T.ColorJitter(brightness=.3, hue=.1),
                                # T.Grayscale(3),
                                T.ToTensor()
                                ])
@@ -36,7 +36,8 @@ if __name__ == "__main__":
                                 T.ToTensor()])
 
     print("------------ Creating Dataset ------------")
-    full_dataset = torch_data.FolderDataset(config.IMG_PATH, config.IMG_DICT_PATH, transforms_in, transforms_out)
+    full_dataset = torch_data.FolderDataset(config.IMG_PATH, config.IMG_PATH_OUTPUT, config.IMG_DICT_PATH,
+                                            transforms_in, transforms_out)
 
     train_size = int(config.TRAIN_RATIO * len(full_dataset))
     val_size = len(full_dataset) - train_size

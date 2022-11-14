@@ -138,3 +138,9 @@ Bildung einer Stichprobe von zwanzig Wappen, zwei Evaluationen:
 - Ähnlichkeit des ausgewählten Wappens mit Top 5
 
 Grundlage für Entscheidung für systemnutzung
+
+https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
+https://towardsdatascience.com/intuitively-understanding-convolutions-for-deep-learning-1f6f42faee1
+https://medium.com/@gabriel_83172/how-to-find-similar-images-using-math-a-gentile-introduction-to-image-retrieval-and-neural-67f3c987b643
+
+_transformed2 score: 2, secondary score: 3
