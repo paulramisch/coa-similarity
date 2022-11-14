@@ -17,6 +17,7 @@ from PIL import Image, ImageDraw, ImageFont
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 import pickle
+import kornia
 
 
 def load_image_tensor(image_path, device):
@@ -32,7 +33,9 @@ def load_image_tensor(image_path, device):
     img_processed.paste(image, (int((config.IMG_WIDTH - image.width) / 2), int((config.IMG_HEIGHT - image.height) / 2)))
 
     transforms = T.Compose([T.ToTensor()])
-    image_tensor = transforms(img_processed).unsqueeze(0)
+    image_tensor = transforms(img_processed)
+    # Edge detection
+    image_tensor = kornia.filters.canny(image_tensor[None, :])[1].view(1,128,128).unsqueeze(0)
 
     # print(image_tensor.shape)
     # input_images = image_tensor.to(device)

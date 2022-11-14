@@ -143,4 +143,6 @@ https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
 https://towardsdatascience.com/intuitively-understanding-convolutions-for-deep-learning-1f6f42faee1
 https://medium.com/@gabriel_83172/how-to-find-similar-images-using-math-a-gentile-introduction-to-image-retrieval-and-neural-67f3c987b643
 
-_transformed2 score: 2, secondary score: 3
+_transformed score: 11, secondary score: 5
+_stn: 7, secondary: 4
+_transformed2 score: 7, secondary score: 3

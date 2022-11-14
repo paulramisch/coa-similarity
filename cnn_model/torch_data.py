@@ -6,6 +6,7 @@ import os
 from tqdm import tqdm
 from torch.utils.data import Dataset
 import pickle
+import kornia
 
 
 class FolderDataset(Dataset):
@@ -63,6 +64,9 @@ class FolderDataset(Dataset):
             img_processed = Image.new('RGB', (size, size), (0, 0, 0))
             img_processed.paste(image, (int((size - image.width) / 2), int((size - image.height) / 2)))
             tensor = self.transform_in(img_processed)
+
+            # Edge detection
+            tensor = kornia.filters.canny(tensor[None, :])[1].view(1,128,128)
 
             return tensor
 

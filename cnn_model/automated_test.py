@@ -22,18 +22,17 @@ def test_model(encoder, img_dict, embedding, device, data_path='../data/coa_rena
         plot_similar_cnn(data_path + test[0], embedding, encoder, device, img_dict).show()
     return f"{MODEL_NAME} score: {score}, secondary score: {score_secondary}"
 
-
 if __name__ == "__main__":
     # Parameter
     MODEL_NAME = "_transformed2"
     REL_PATH = "../"
 
     # Set variable paths
-    DATA_PATH = "{}data/coa_renamed/".format(REL_PATH)
+    DATA_PATH = "{}data/coa_cutout/".format(REL_PATH)
     src_encoder = "{}data/models/deep_encoder{}.pt".format(REL_PATH, MODEL_NAME)
     src_dict = "{}data/models/img_dict{}.pkl".format(REL_PATH, MODEL_NAME)
     src_embedding = "{}data/models/data_embedding_f{}.npy".format(REL_PATH, MODEL_NAME)
 
     encoder, img_dict, embedding, device = set_vars(src_encoder, src_dict, src_embedding)
-    result = test_model(encoder, img_dict, embedding, device)
+    result = test_model(encoder, img_dict, embedding, device, data_path=DATA_PATH)
     print(result)

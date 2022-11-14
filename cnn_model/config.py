@@ -11,7 +11,7 @@ VAL_RATIO = 1 - TRAIN_RATIO
 SHUFFLE_BUFFER_SIZE = 100
 
 LEARNING_RATE = 1e-3
-EPOCHS = 10
+EPOCHS = 5
 TRAIN_BATCH_SIZE = 32
 TEST_BATCH_SIZE = 32
 FULL_BATCH_SIZE = 32
@@ -24,7 +24,7 @@ ENCODER_MODEL_PATH = "{}data/models/deep_encoder{}.pt".format(REL_PATH, MODEL_NA
 DECODER_MODEL_PATH = "{}data/models/deep_decoder{}.pt".format(REL_PATH, MODEL_NAME)
 EMBEDDING_PATH = "{}data/models/data_embedding_f{}.npy".format(REL_PATH, MODEL_NAME)
 IMG_DICT_PATH = "{}data/models/img_dict{}.pkl".format(REL_PATH, MODEL_NAME)
-EMBEDDING_SHAPE = (1, 64, 16, 16)
+EMBEDDING_SHAPE = (1, 32, 16, 16)
 # TEST_RATIO = 0.2
 
 ###### Test time #########
