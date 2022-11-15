@@ -146,3 +146,35 @@ https://medium.com/@gabriel_83172/how-to-find-similar-images-using-math-a-gentil
 _transformed score: 11, secondary score: 5
 _stn: 7, secondary: 4
 _transformed2 score: 7, secondary score: 3
+_transformed2 bw: score: 8, secondary score: 4
+_transformed3 score: 11, secondary score: 6
+
+Epochs = 4, Training Loss : 0.03057108446955681
+Epochs = 4, Validation Loss : 0.017935700714588165
+
+Epochs = 9, Training Loss : 0.05654442310333252
+Epochs = 9, Validation Loss : 0.02859371528029442
+
+Epochs = 8, Training Loss : 0.0351361483335495
+Epochs = 8, Validation Loss : 0.020298205316066742
+
+Epochs = 8, Training Loss : 0.027494631707668304
+Epochs = 8, Validation Loss : 0.016442641615867615
+
+Epochs = 8, Validation Loss : 0.016699939966201782
+Epochs = 9, Training Loss : 0.029162311926484108
+
+Epochs = 7, Training Loss : 0.026608875021338463
+Epochs = 7, Validation Loss : 0.015363448299467564
+
+Epochs = 6, Training Loss : 0.04016155004501343
+Epochs = 6, Validation Loss : 0.024223677814006805
+
+Epochs = 8, Training Loss : 0.03813875466585159
+Epochs = 8, Validation Loss : 0.02090904489159584
+
+Epochs = 8, Training Loss : 0.03716358542442322
+Epochs = 8, Validation Loss : 0.019994445145130157
+
+Epochs = 9, Training Loss : 0.035220108926296234
+Epochs = 9, Validation Loss : 0.018688756972551346

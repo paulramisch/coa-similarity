@@ -28,12 +28,10 @@ if __name__ == "__main__":
                                # T.RandomPerspective(distortion_scale=0.05, p=1.0),
                                # T.RandomCrop(size=(128, 128)),
                                # T.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 5)),
-                               # T.ColorJitter(brightness=.3, hue=.1),
-                               # T.Grayscale(3),
+                               T.ColorJitter(brightness=.3, hue=.1),
                                T.ToTensor()
                                ])
-    transforms_out = T.Compose([# T.Grayscale(3),
-                                T.ToTensor()])
+    transforms_out = T.Compose([T.ToTensor()])
 
     print("------------ Creating Dataset ------------")
     full_dataset = torch_data.FolderDataset(config.IMG_PATH, config.IMG_PATH_OUTPUT, config.IMG_DICT_PATH,

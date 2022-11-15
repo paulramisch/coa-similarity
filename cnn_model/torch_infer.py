@@ -33,13 +33,26 @@ def load_image_tensor(image_path, device):
     img_processed.paste(image, (int((config.IMG_WIDTH - image.width) / 2), int((config.IMG_HEIGHT - image.height) / 2)))
 
     transforms = T.Compose([T.ToTensor()])
-    image_tensor = transforms(img_processed)
+    tensor_rgb = transforms(img_processed)
+
     # Edge detection
-    image_tensor = kornia.filters.canny(image_tensor[None, :])[1].view(1,128,128).unsqueeze(0)
+    edge_layer = kornia.filters.canny(tensor_rgb[None, :])[1].view(1, 128, 128)
+
+    # RGB transform: Blur & Crop
+    rgb_transforms = T.Compose([T.GaussianBlur(kernel_size=9, sigma=5),
+                                T.CenterCrop(size=(98, 78)),
+                                T.Pad((25, 15))])
+    tensor_rgb_transformed = rgb_transforms(rgb_transforms(tensor_rgb))
+
+    # Combine vectors
+    tensor = torch.cat((tensor_rgb_transformed, edge_layer), 0)
+
+    # Unsqueze
+    tensor = tensor.unsqueeze(0)
 
     # print(image_tensor.shape)
     # input_images = image_tensor.to(device)
-    return image_tensor
+    return tensor
 
 
 def compute_similar_images(image_path, num_images, embedding, encoder, device, img_dict):
@@ -216,8 +229,8 @@ def set_vars(src_encoder=config.ENCODER_MODEL_PATH, src_dict=config.IMG_DICT_PAT
 
     return encoder, img_dict, embedding, device
 
-def plot_similar_cnn(query, embedding, encoder, device, img_dict):
-    image_list = compute_similar_images(query, config.NUM_IMAGES, embedding, encoder, device, img_dict)
+def plot_similar_cnn(query, embedding, encoder, device, img_dict, num = config.NUM_IMAGES):
+    image_list = compute_similar_images(query, num, embedding, encoder, device, img_dict)
     return plot_similar_images_grid(query, image_list, 'CNN-Model')
 
 if __name__ == "__main__":

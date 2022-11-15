@@ -14,15 +14,15 @@ class ConvEncoder(nn.Module):
     def __init__(self):
         super().__init__()
         # self.img_size = img_size
-        self.conv1 = nn.Conv2d(1, 8, (3, 3), padding=(1, 1))
+        self.conv1 = nn.Conv2d(4, 16, (3, 3), padding=(1, 1))
         self.relu1 = nn.ReLU(inplace=True)
         self.maxpool1 = nn.MaxPool2d((2, 2))
 
-        self.conv2 = nn.Conv2d(8, 16, (3, 3), padding=(1, 1))
+        self.conv2 = nn.Conv2d(16, 32, (3, 3), padding=(1, 1))
         self.relu2 = nn.ReLU(inplace=True)
         self.maxpool2 = nn.MaxPool2d((2, 2))
 
-        self.conv3 = nn.Conv2d(16, 32, (3, 3), padding=(1, 1))
+        self.conv3 = nn.Conv2d(32, 64, (3, 3), padding=(1, 1))
         self.relu3 = nn.ReLU(inplace=True)
         self.maxpool3 = nn.MaxPool2d((2, 2))
 
@@ -57,15 +57,15 @@ class ConvDecoder(nn.Module):
 
     def __init__(self):
         super().__init__()
-        self.deconv1 = nn.ConvTranspose2d(32, 16, (2, 2), stride=(2, 2))
+        self.deconv1 = nn.ConvTranspose2d(64, 32, (2, 2), stride=(2, 2))
         # self.upsamp1 = nn.UpsamplingBilinear2d(2)
         self.relu1 = nn.ReLU(inplace=True)
 
-        self.deconv2 = nn.ConvTranspose2d(16, 8, (2, 2), stride=(2, 2))
+        self.deconv2 = nn.ConvTranspose2d(32, 16, (2, 2), stride=(2, 2))
         # self.upsamp1 = nn.UpsamplingBilinear2d(2)
         self.relu2 = nn.ReLU(inplace=True)
 
-        self.deconv3 = nn.ConvTranspose2d(8, 1, (2, 2), stride=(2, 2))
+        self.deconv3 = nn.ConvTranspose2d(16, 4, (2, 2), stride=(2, 2))
         # self.upsamp1 = nn.UpsamplingBilinear2d(2)
         self.relu3 = nn.ReLU(inplace=True)
 

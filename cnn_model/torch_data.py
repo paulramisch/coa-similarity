@@ -7,6 +7,7 @@ from tqdm import tqdm
 from torch.utils.data import Dataset
 import pickle
 import kornia
+import torchvision.transforms as T
 
 
 class FolderDataset(Dataset):
@@ -63,10 +64,19 @@ class FolderDataset(Dataset):
             image.thumbnail((size, size))
             img_processed = Image.new('RGB', (size, size), (0, 0, 0))
             img_processed.paste(image, (int((size - image.width) / 2), int((size - image.height) / 2)))
-            tensor = self.transform_in(img_processed)
+            tensor_rgb = self.transform_in(img_processed)
 
             # Edge detection
-            tensor = kornia.filters.canny(tensor[None, :])[1].view(1,128,128)
+            edge_layer = kornia.filters.canny(tensor_rgb[None, :])[1].view(1, 128, 128)
+
+            # RGB transform: Blur & Crop
+            rgb_transforms = T.Compose([T.GaussianBlur(kernel_size=9, sigma=5),
+                                        T.CenterCrop(size=(98, 78)),
+                                        T.Pad((25, 15))])
+            tensor_rgb_transformed = rgb_transforms(rgb_transforms(tensor_rgb))
+
+            # Combine vectors
+            tensor = torch.cat((tensor_rgb_transformed, edge_layer), 0)
 
             return tensor
 
