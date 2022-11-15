@@ -42,10 +42,15 @@ def load_image_tensor(image_path, device):
     rgb_transforms = T.Compose([T.GaussianBlur(kernel_size=9, sigma=5),
                                 T.CenterCrop(size=(98, 78)),
                                 T.Pad((25, 15))])
-    tensor_rgb_transformed = rgb_transforms(rgb_transforms(tensor_rgb))
+    tensor_transformed = rgb_transforms(rgb_transforms(tensor_rgb))
+
+    # Normalize
+    mean, std = tensor_transformed.mean([1, 2]), tensor_transformed.std([1, 2])
+    normalizer = T.Compose([T.Normalize(mean, std)])
+    tensor_transformed = normalizer(tensor_transformed)
 
     # Combine vectors
-    tensor = torch.cat((tensor_rgb_transformed, edge_layer), 0)
+    tensor = torch.cat((tensor_transformed, edge_layer), 0)
 
     # Unsqueze
     tensor = tensor.unsqueeze(0)

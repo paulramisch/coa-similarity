@@ -24,11 +24,11 @@ if __name__ == "__main__":
 
     utils.seed_everything(config.SEED)
 
-    transforms_in = T.Compose([T.RandomRotation(degrees=(-5, 5)),
+    transforms_in = T.Compose([# T.RandomRotation(degrees=(-3, 3)),
                                # T.RandomPerspective(distortion_scale=0.05, p=1.0),
                                # T.RandomCrop(size=(128, 128)),
                                # T.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 5)),
-                               T.ColorJitter(brightness=.3, hue=.1),
+                               # T.ColorJitter(brightness=.3, hue=.1),
                                T.ToTensor()
                                ])
     transforms_out = T.Compose([T.ToTensor()])

@@ -18,7 +18,7 @@ FULL_BATCH_SIZE = 32
 
 ###### Train and Test time #########
 DATA_PATH = "{}data/coa_renamed/".format(REL_PATH)
-MODEL_NAME = "_transformed3_cut"
+MODEL_NAME = "_transformed6"
 AUTOENCODER_MODEL_PATH = "baseline_autoencoder{}.pt".format(REL_PATH, MODEL_NAME)
 ENCODER_MODEL_PATH = "{}data/models/deep_encoder{}.pt".format(REL_PATH, MODEL_NAME)
 DECODER_MODEL_PATH = "{}data/models/deep_decoder{}.pt".format(REL_PATH, MODEL_NAME)

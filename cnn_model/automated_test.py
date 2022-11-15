@@ -9,22 +9,26 @@ def test_model(encoder, img_dict, embedding, device, data_path='../data/coa_rena
     test_data_secondary = list(csv.reader(open(test_data_secondary_path)))
 
     # Set Score vars
-    score = -len(test_data)
-    score_secondary = -len(test_data_secondary)
+    self = 0
+    score = 0
+    score_secondary = 0
 
     # Iterate over test_data
     for idx, test in enumerate(test_data):
         image_list = compute_similar_images(data_path + test[0], 10, embedding, encoder, device, img_dict)
+        self += 1 if image_list[0][0] == test[0] else 0
 
-        for img in image_list:
-            score += 1 if img[0] in test else 0
-            score_secondary += 1 if img[0] in test_data_secondary[idx] else 0
+        for idy, img in enumerate(image_list):
+            # the first row is the img name itself
+            if idy > 0:
+                score += 1 if img[0] in test else 0
+                score_secondary += 1 if img[0] in test_data_secondary[idx] else 0
         plot_similar_cnn(data_path + test[0], embedding, encoder, device, img_dict, 20).show()
-    return f"{MODEL_NAME} score: {score}, secondary score: {score_secondary}"
+    return f"{MODEL_NAME} score: {score}, secondary score: {score_secondary}, self: {self}/{len(test_data)}"
 
 if __name__ == "__main__":
     # Parameter
-    MODEL_NAME = "_transformed3_cut"
+    MODEL_NAME = "_transformed6"
     REL_PATH = "../"
 
     # Set variable paths

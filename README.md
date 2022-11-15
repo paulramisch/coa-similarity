@@ -143,38 +143,40 @@ https://pytorch.org/tutorials/intermediate/torchvision_tutorial.html
 https://towardsdatascience.com/intuitively-understanding-convolutions-for-deep-learning-1f6f42faee1
 https://medium.com/@gabriel_83172/how-to-find-similar-images-using-math-a-gentile-introduction-to-image-retrieval-and-neural-67f3c987b643
 
+# Autoencoder Mitnamen
+SPA-Technik zur Drehung funktioniert semigut
+
+RGB Architektur
 _transformed score: 11, secondary score: 5
+
+Stn architecutre
 _stn: 7, secondary: 4
+
+traditional RGB 
 _transformed2 score: 7, secondary score: 3
+
+Black & white
 _transformed2 bw: score: 8, secondary score: 4
+
+New layer with edge
 _transformed3 score: 11, secondary score: 6
 
-Epochs = 4, Training Loss : 0.03057108446955681
-Epochs = 4, Validation Loss : 0.017935700714588165
+---
+## New Scoring system
+coa_renamed input & output (and no normalisation)  (old training data)
+_transformed3 score: 14, secondary score: 6, self: 14/14
 
-Epochs = 9, Training Loss : 0.05654442310333252
-Epochs = 9, Validation Loss : 0.02859371528029442
+coa_cutout input & output and normalisation (old training data)
+_transformed3_cut score: 11, secondary score: 10, self: 14/14
 
-Epochs = 8, Training Loss : 0.0351361483335495
-Epochs = 8, Validation Loss : 0.020298205316066742
+coa_renamed input & output (and no normalisation) (new training data)
+_transformed4 score: 12, secondary score: 4, self: 14/14
 
-Epochs = 8, Training Loss : 0.027494631707668304
-Epochs = 8, Validation Loss : 0.016442641615867615
+coa_renamed input & output and normalisation (new training data)
+_transformed4_norm_re score: 11, secondary score: 8, self: 14/14
 
-Epochs = 8, Validation Loss : 0.016699939966201782
-Epochs = 9, Training Loss : 0.029162311926484108
+coa_renamed input & coa_cutout output and normalisation (normalisation values from input) (new training data)
+_transformed5_norm_cu-re score: 5, secondary score: 3, self: 5/14
 
-Epochs = 7, Training Loss : 0.026608875021338463
-Epochs = 7, Validation Loss : 0.015363448299467564
-
-Epochs = 6, Training Loss : 0.04016155004501343
-Epochs = 6, Validation Loss : 0.024223677814006805
-
-Epochs = 8, Training Loss : 0.03813875466585159
-Epochs = 8, Validation Loss : 0.02090904489159584
-
-Epochs = 8, Training Loss : 0.03716358542442322
-Epochs = 8, Validation Loss : 0.019994445145130157
-
-Epochs = 9, Training Loss : 0.035220108926296234
-Epochs = 9, Validation Loss : 0.018688756972551346
+coa_renamed input & output and normalisation (#9) (new training data), GaussianBlur: 11 (ahead 9)
+_transformed6 score: 11, secondary score: 7, self: 14/14
