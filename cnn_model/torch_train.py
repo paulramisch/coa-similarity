@@ -5,6 +5,7 @@ import cnn_model.torch_model as torch_model
 import cnn_model.torch_engine as torch_engine
 import cnn_model.torch_data as torch_data
 import cnn_model.utils as utils
+import cnn_model.torch_create_embeddings as torch_create_embeddings
 import torchvision.transforms as T
 import cnn_model.config as config
 import numpy as np
@@ -24,11 +25,11 @@ if __name__ == "__main__":
 
     utils.seed_everything(config.SEED)
 
-    transforms_in = T.Compose([# T.RandomRotation(degrees=(-3, 3)),
-                               # T.RandomPerspective(distortion_scale=0.05, p=1.0),
+    transforms_in = T.Compose([T.RandomRotation(degrees=(-5, 5)),
+                               T.RandomPerspective(distortion_scale=0.03, p=1.0),
                                # T.RandomCrop(size=(128, 128)),
                                # T.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 5)),
-                               # T.ColorJitter(brightness=.3, hue=.1),
+                               T.ColorJitter(brightness=.3, hue=.1),
                                T.ToTensor()
                                ])
     transforms_out = T.Compose([T.ToTensor()])
@@ -106,14 +107,6 @@ if __name__ == "__main__":
 
     print("---- Creating Embeddings for the full dataset ---- ")
 
-    embedding = torch_engine.create_embedding(
-        encoder, full_loader, config.EMBEDDING_SHAPE, device
-    )
-
-    # Convert embedding to numpy and save them
-    numpy_embedding = embedding.cpu().detach().numpy()
-    num_images = numpy_embedding.shape[0]
-
-    # Dump the embeddings for complete dataset, not just train
-    flattened_embedding = numpy_embedding.reshape((num_images, -1))
-    np.save(config.EMBEDDING_PATH, flattened_embedding)
+    torch_create_embeddings.create_embeddings(config.IMG_PATH, encoder, config.EMBEDDING_PATH,
+                                              config.IMG_DICT_PATH, config.EMBEDDING_SHAPE, device)
+    print("Embeddings successfully created")

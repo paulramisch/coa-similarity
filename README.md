@@ -163,20 +163,69 @@ _transformed3 score: 11, secondary score: 6
 
 ---
 ## New Scoring system
-coa_renamed input & output (and no normalisation)  (old training data)
-_transformed3 score: 14, secondary score: 6, self: 14/14
+coa_renamed input & output (and no normalisation)  (old training data, new results), 2x GaussianBlur: 9
+_transformed3 score: 16, secondary score: 8, self: 14/14 - Querry 1x Gaussian 9
+_transformed3 score: 15, secondary score: 8, self: 14/14 - Querry 2x Gaussian 9
 
 coa_cutout input & output and normalisation (old training data)
-_transformed3_cut score: 11, secondary score: 10, self: 14/14
+_transformed3_cut score: 13, secondary score: 10, self: 14/14 - Querry 2x Gaussian 9
+_transformed3_cut score: 15, secondary score: 10, self: 14/14 - Querry 2x Gaussian 11
 
-coa_renamed input & output (and no normalisation) (new training data)
+coa_renamed input & output (and no normalisation)
 _transformed4 score: 12, secondary score: 4, self: 14/14
 
-coa_renamed input & output and normalisation (new training data)
-_transformed4_norm_re score: 11, secondary score: 8, self: 14/14
+coa_renamed input & output and normalisation, 2x GaussianBlur: 9
+_transformed4_norm_re score: 13, secondary score: 9, self: 14/14 - Querry 1x Gaussian 9
+_transformed4_norm_re score: 13, secondary score: 8, self: 14/14 - Querry 2x Gaussian 9
+_transformed4_norm_re score: 14, secondary score: 9, self: 14/14 - Querry 1x Gaussian 11
+_transformed4_norm_re score: 13, secondary score: 6, self: 14/14 - Querry 2x Gaussian 11
 
-coa_renamed input & coa_cutout output and normalisation (normalisation values from input) (new training data)
+coa_renamed input & coa_cutout output and normalisation (normalisation values from input)
 _transformed5_norm_cu-re score: 5, secondary score: 3, self: 5/14
 
-coa_renamed input & output and normalisation (#9) (new training data), GaussianBlur: 11 (ahead 9)
-_transformed6 score: 11, secondary score: 7, self: 14/14
+coa_renamed input & output and normalisation (#9), GaussianBlur: 9
+_transformed6 score: 11, secondary score: 7, self: 14/14 - Queery 2x Gaussian 9
+_transformed6 score: 12, secondary score: 8, self: 14/14 - Querry 1x Gaussian 7
+_transformed6 score: 13, secondary score: 8, self: 14/14 - Queery 1x Gaussian 11 
+_transformed6 score: 14, secondary score: 8, self: 14/14 - Queery 1x Gaussian 9
+
+coa_renamed input & output and normalisation, 1x GaussianBlur: 13
+_transformed7 score: 10, secondary score: 7, self: 14/14 - Querry 2x Gaussian 5
+_transformed7 score: 11, secondary score: 8, self: 14/14 - Querry 1x Gaussian 11
+_transformed7 score: 11, secondary score: 9, self: 14/14 - Querry 1x Gaussian 9
+_transformed7 score: 11, secondary score: 10, self: 14/14 - Querry 1x Gaussian 5
+
+coa_renamed input & output and normalisation, 1x GaussianBlur: 15
+_transformed8 score: 11, secondary score: 8, self: 14/14 - Querry 1x Gaussian 15
+_transformed8 score: 11, secondary score: 9, self: 14/14 - Querry 1x Gaussian 5 
+
+coa_renamed input & output, limited to 8 iterations, no normalisation, 2x GaussianBlur: 9
+_transformed9 score: 16, secondary score: 5, self: 14/14
+
+coa_renamed input & output, limited to 8 iterations, no normalisation, 1x GaussianBlur: 9
+_transformed10 score: 14, secondary score: 5, self: 14/14
+
+coa_renamed input & output, limited to 8 iterations, no normalisation, 1x GaussianBlur: 11
+_transformed11 score: 15, secondary score: 5, self: 14/14
+
+coa_renamed input & output, limited to 8 iterations, no normalisation, 1x GaussianBlur: 13
+_transformed12 score: 12, secondary score: 5, self: 14/14
+
+coa_renamed input & output, limited to 8 iterations, no normalisation, 1x GaussianBlur: 11 - but after crop instead of before
+_transformed13 score: 13, secondary score: 0, self: 14/14
+
+coa_renamed input & output, limited to 8 iterations, normalisation, 2x GaussianBlur: 9
+_transformed13 score: 10, secondary score: 8, self: 14/14 - Querry 2x Gaussian 9
+_transformed13 score: 11, secondary score: 6, self: 14/14 - Querry 2x Gaussian 7
+
+coa_renamed input & output, limited to 15 iterations, last used, normalisation, 2x GaussianBlur: 9
+_transformed14 score: 15, secondary score: 9, self: 14/14 - Querry 2x Gaussian 9
+_transformed14 score: 14, secondary score: 10, self: 14/14 - Querry 2x Gaussian 7
+
+coa_renamed input & output, limited to 15 iterations, 18th used, normalisation, 2x GaussianBlur: 9
+_transformed15 score: 13, secondary score: 10, self: 14/14 - Querry 2x Gaussian 9
+_transformed15 score: 13, secondary score: 10, self: 14/14 - Querry 2x Gaussian 7
+
+Epochs = 18, Training Loss : 0.3454739451408386
+Validation Loss decreased, saving new best model
+Epochs = 18, Validation Loss : 0.34142929315567017

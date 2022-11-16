@@ -70,7 +70,7 @@ class FolderDataset(Dataset):
             edge_layer = kornia.filters.canny(tensor_rgb[None, :])[1].view(1, 128, 128)
 
             # RGB transform: Blur & Crop
-            rgb_transforms = T.Compose([T.GaussianBlur(kernel_size=11, sigma=5),
+            rgb_transforms = T.Compose([T.GaussianBlur(kernel_size=7, sigma=5),
                                         T.CenterCrop(size=(98, 78)),
                                         T.Pad((25, 15))])
             tensor_transformed = rgb_transforms(rgb_transforms(tensor_rgb))

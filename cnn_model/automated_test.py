@@ -28,7 +28,7 @@ def test_model(encoder, img_dict, embedding, device, data_path='../data/coa_rena
 
 if __name__ == "__main__":
     # Parameter
-    MODEL_NAME = "_transformed6"
+    MODEL_NAME = "_transformed15"
     REL_PATH = "../"
 
     # Set variable paths

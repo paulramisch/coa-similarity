@@ -11,14 +11,14 @@ VAL_RATIO = 1 - TRAIN_RATIO
 SHUFFLE_BUFFER_SIZE = 100
 
 LEARNING_RATE = 1e-3
-EPOCHS = 10
+EPOCHS = 20
 TRAIN_BATCH_SIZE = 32
 TEST_BATCH_SIZE = 32
 FULL_BATCH_SIZE = 32
 
 ###### Train and Test time #########
 DATA_PATH = "{}data/coa_renamed/".format(REL_PATH)
-MODEL_NAME = "_transformed6"
+MODEL_NAME = "_transformed15"
 AUTOENCODER_MODEL_PATH = "baseline_autoencoder{}.pt".format(REL_PATH, MODEL_NAME)
 ENCODER_MODEL_PATH = "{}data/models/deep_encoder{}.pt".format(REL_PATH, MODEL_NAME)
 DECODER_MODEL_PATH = "{}data/models/deep_decoder{}.pt".format(REL_PATH, MODEL_NAME)
