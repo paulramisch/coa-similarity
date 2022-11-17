@@ -86,7 +86,7 @@ def compute_similar_images(image_path, num_images, embedding, encoder, device, i
     knn = NearestNeighbors(n_neighbors=num_images, metric="cosine")
     knn.fit(embedding)
 
-    distances, indices  = knn.kneighbors(flattened_embedding)
+    distances, indices = knn.kneighbors(flattened_embedding)
 
     image_list = []
     for idx, indice in enumerate(indices[0]):

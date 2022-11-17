@@ -2,7 +2,6 @@ __all__ = ["ConvEncoder", "ConvDecoder"]
 
 import torch
 import torch.nn as nn
-
 # import config
 
 
