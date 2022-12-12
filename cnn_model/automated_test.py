@@ -1,9 +1,10 @@
-from cnn_model.torch_infer import compute_similar_images, set_vars, plot_similar_cnn
+from cnn_model.torch_infer import compute_similar_images, set_vars, plot_similar_cnn, plot_similar_images_grid
 import csv
 
 
 def test_model(encoder, img_dict, embedding, device, data_path='../data/coa_renamed/',
-               test_data_path="../data/test_data.csv", test_data_secondary_path="../data/test_data_secondary.csv"):
+               test_data_path="../data/test_data.csv", test_data_secondary_path="../data/test_data_secondary.csv",
+               angle=False, angle_dict_path="../data/coa_rotation_angle_rounded-dict.csv"):
     # Get test data
     test_data = list(csv.reader(open(test_data_path)))
     test_data_secondary = list(csv.reader(open(test_data_secondary_path)))
@@ -13,9 +14,18 @@ def test_model(encoder, img_dict, embedding, device, data_path='../data/coa_rena
     score = 0
     score_secondary = 0
 
+    if angle:
+        # Load angle dictionary
+        with open(angle_dict_path, mode='r') as infile:
+            reader = csv.reader(infile)
+            angle_dict = dict((rows[0], rows[1]) for rows in reader)
+    else:
+        angle_dict = None
+
     # Iterate over test_data
     for idx, test in enumerate(test_data):
-        image_list = compute_similar_images(data_path + test[0], 10, embedding, encoder, device, img_dict)
+        image_list = compute_similar_images(data_path + test[0], 10, embedding, encoder, device, img_dict,
+                                            test[0], angle_dict)
         self += 1 if image_list[0][0] == test[0] else 0
 
         for idy, img in enumerate(image_list):
@@ -28,15 +38,23 @@ def test_model(encoder, img_dict, embedding, device, data_path='../data/coa_rena
 
 if __name__ == "__main__":
     # Parameter
-    MODEL_NAME = "_transformed15"
+    MODEL_NAME = "_transformed14"
     REL_PATH = "../"
+    angle = False
 
     # Set variable paths
-    DATA_PATH = "{}data/coa_renamed/".format(REL_PATH)
+    data = "{}data/coa_renamed/".format(REL_PATH)
     src_encoder = "{}data/models/deep_encoder{}.pt".format(REL_PATH, MODEL_NAME)
     src_dict = "{}data/models/img_dict{}.pkl".format(REL_PATH, MODEL_NAME)
     src_embedding = "{}data/models/data_embedding_f{}.npy".format(REL_PATH, MODEL_NAME)
 
     encoder, img_dict, embedding, device = set_vars(src_encoder, src_dict, src_embedding)
-    result = test_model(encoder, img_dict, embedding, device, data_path=DATA_PATH)
+    result = test_model(encoder, img_dict, embedding, device, data, angle=angle)
     print(result)
+
+    # for idx, img in enumerate(test_data):
+    #     list = []
+    #     for img_sim in img:
+    #         if img_sim != "":
+    #             list.append([img_sim, 0])
+    #     plot_similar_images_grid("../data/coa_renamed/" + img[0], list, 'Similar images').save(f"../data/plots/similar/{idx}.jpg")

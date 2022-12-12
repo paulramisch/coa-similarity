@@ -6,9 +6,6 @@ import torch.nn as nn
 
 
 class ConvEncoder(nn.Module):
-    """
-    A simple Convolutional Encoder Model
-    """
 
     def __init__(self):
         super().__init__()
@@ -33,19 +30,14 @@ class ConvEncoder(nn.Module):
         x = self.relu1(x)
         x = self.maxpool1(x)
 
-        # print(x.shape)
-
         x = self.conv2(x)
         x = self.relu2(x)
         x = self.maxpool2(x)
-
-        # print(x.shape)
 
         x = self.conv3(x)
         x = self.relu3(x)
         x = self.maxpool3(x)
 
-        # print(x.shape)
         return x
 
 
@@ -72,55 +64,11 @@ class ConvDecoder(nn.Module):
         # print(x.shape)
         x = self.deconv1(x)
         x = self.relu1(x)
-        # print(x.shape)
 
         x = self.deconv2(x)
         x = self.relu2(x)
-        # print(x.shape)
 
         x = self.deconv3(x)
         x = self.relu3(x)
-        # print(x.shape)
 
         return x
-
-
-# if __name__ == "__main__":
-# img_random = torch.randn(1, 3, 512, 512)
-# img_random2 = torch.randn(1, 3, 512, 512)
-# print(img_random.shape)
-
-# enc = ConvEncoder()
-# dec = ConvDecoder()
-
-# enc_out = enc(img_random)
-# enc_out2 = enc(img_random2)
-# print(enc_out.shape)
-# print(enc_out2.shape)
-
-# emb = torch.cat((enc_out, enc_out2), 0)
-# print(emb.shape)
-
-# # embedding = torch.randn(config.EMBEDDING_SHAPE)
-# # print(embedding.shape)
-
-# dec_out = dec(enc_out)
-# print(dec_out.shape)
-
-# embedding_dim = config.EMBEDDING_SHAPE
-# embedding = torch.randn(embedding_dim)
-# print(embedding.shape)
-
-# img_random = torch.randn(32, 3, 512, 512)
-# img_random2 = torch.randn(32, 3, 512, 512)
-
-# encoder = ConvEncoder()
-# enc_output = encoder(img_random).cpu()
-# embedding = torch.cat((embedding, enc_output), 0)
-# print(embedding.shape)
-
-# enc_output2 = encoder(img_random2).cpu()
-# embedding = torch.cat((embedding, enc_output2), 0)
-# print(embedding.shape)
-
-# print(embedding.numpy().shape)

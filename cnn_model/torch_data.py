@@ -8,6 +8,7 @@ from torch.utils.data import Dataset
 import pickle
 import kornia
 import torchvision.transforms as T
+import csv
 
 
 class FolderDataset(Dataset):
@@ -19,12 +20,18 @@ class FolderDataset(Dataset):
     transform (optional) : torchvision transforms to be applied while making dataset
     """
 
-    def __init__(self, main_dir, main_dir_output, img_dict_path, transform_in=None, transform_out=None, tensor_dim=128):
+    def __init__(self, main_dir, main_dir_output, img_dict_path,
+                 transform_in=None, transform_out=None, tensor_dim=128, angle_dict_path=None):
         self.main_dir = main_dir
         self.main_dir_output = main_dir_output
         self.transform_in = transform_in
         self.transform_out = transform_out
         self.tensor_dim = tensor_dim
+
+        if angle_dict_path is not None:
+            with open(angle_dict_path, mode='r') as infile:
+                reader = csv.reader(infile)
+                self.angle_dict = dict((rows[0], rows[1]) for rows in reader)
 
         # Filter files by type
         self.all_imgs = []
@@ -68,6 +75,13 @@ class FolderDataset(Dataset):
 
             # Edge detection
             edge_layer = kornia.filters.canny(tensor_rgb[None, :])[1].view(1, 128, 128)
+
+            # Rotation
+            if self.angle_dict is not None:
+                angle = self.angle_dict.get(img_title)
+                if angle is not None:
+                    edge_layer = T.functional.rotate(edge_layer, -int(angle))
+                    tensor_rgb = T.functional.rotate(tensor_rgb, -int(angle))
 
             # RGB transform: Blur & Crop
             rgb_transforms = T.Compose([T.GaussianBlur(kernel_size=7, sigma=5),

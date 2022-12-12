@@ -20,7 +20,7 @@ import pickle
 import kornia
 
 
-def load_image_tensor(image_path, device):
+def load_image_tensor(image_path, device, file_name="", angle_dict=None):
     """
     Loads a given image to device.
     Args:
@@ -38,8 +38,15 @@ def load_image_tensor(image_path, device):
     # Edge detection
     edge_layer = kornia.filters.canny(tensor_rgb[None, :])[1].view(1, 128, 128)
 
+    # Rotation
+    if angle_dict is not None:
+        angle = angle_dict.get(file_name)
+        if angle is not None:
+            edge_layer = T.functional.rotate(edge_layer, -int(angle))
+            tensor_rgb = T.functional.rotate(tensor_rgb, -int(angle))
+
     # RGB transform: Blur & Crop
-    rgb_transforms = T.Compose([T.GaussianBlur(kernel_size=9, sigma=5),
+    rgb_transforms = T.Compose([T.GaussianBlur(kernel_size=7, sigma=5),
                                 T.CenterCrop(size=(98, 78)),
                                 T.Pad((25, 15))])
     tensor_transformed = rgb_transforms(rgb_transforms(tensor_rgb))
@@ -60,7 +67,7 @@ def load_image_tensor(image_path, device):
     return tensor
 
 
-def compute_similar_images(image_path, num_images, embedding, encoder, device, img_dict):
+def compute_similar_images(image_path, num_images, embedding, encoder, device, img_dict, file_name="", angle_dict=None):
     """
     Given an image and number of similar images to generate.
     Returns the num_images closest nearest images.
@@ -72,7 +79,7 @@ def compute_similar_images(image_path, num_images, embedding, encoder, device, i
     device : "cuda" or "cpu" device.
     """
 
-    image_tensor = load_image_tensor(image_path, device)
+    image_tensor = load_image_tensor(image_path, device, file_name, angle_dict)
     # image_tensor = image_tensor.to(device)
 
     with torch.no_grad():

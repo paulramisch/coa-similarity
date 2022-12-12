@@ -222,10 +222,19 @@ coa_renamed input & output, limited to 15 iterations, last used, normalisation, 
 _transformed14 score: 15, secondary score: 9, self: 14/14 - Querry 2x Gaussian 9
 _transformed14 score: 14, secondary score: 10, self: 14/14 - Querry 2x Gaussian 7
 
-coa_renamed input & output, limited to 15 iterations, 18th used, normalisation, 2x GaussianBlur: 9
+coa_renamed input & output, limited to 20 iterations, 18th used, normalisation, 2x GaussianBlur: 9
 _transformed15 score: 13, secondary score: 10, self: 14/14 - Querry 2x Gaussian 9
 _transformed15 score: 13, secondary score: 10, self: 14/14 - Querry 2x Gaussian 7
 
-Epochs = 18, Training Loss : 0.3454739451408386
-Validation Loss decreased, saving new best model
-Epochs = 18, Validation Loss : 0.34142929315567017
+coa_renamed input & output, limited to 15 iterations, 12th used, normalisation, 2x GaussianBlur: 9
+_transformed15 score: 13, secondary score: 10, self: 14/14 - Querry 2x Gaussian 9
+_transformed15 score: 14, secondary score: 9, self: 14/14 - Querry 2x Gaussian 7
+
+angle transformation
+coa_renamed input & output, limited to 15 iterations, 12th used, normalisation, 2x GaussianBlur: 9
+_transformed16 score: 14, secondary score: 10, self: 14/14 - Querry 2x Gaussian 9
+_transformed16 score: 14, secondary score: 11, self: 14/14 - Querry 2x Gaussian 7
+
+coa_cutout input & output, limited to 15 iterations, 12th used, normalisation,
+_transformed17 score: 13, secondary score: 10, self: 14/14 - Querry 2x Gaussian 9
+_transformed17 score: 12, secondary score: 10, self: 14/14 - Querry 2x Gaussian 7

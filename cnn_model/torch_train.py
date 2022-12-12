@@ -36,7 +36,7 @@ if __name__ == "__main__":
 
     print("------------ Creating Dataset ------------")
     full_dataset = torch_data.FolderDataset(config.IMG_PATH, config.IMG_PATH_OUTPUT, config.IMG_DICT_PATH,
-                                            transforms_in, transforms_out)
+                                            transforms_in, transforms_out, 128, config.ANGLE_DICT_PATH)
 
     train_size = int(config.TRAIN_RATIO * len(full_dataset))
     val_size = len(full_dataset) - train_size
@@ -107,6 +107,6 @@ if __name__ == "__main__":
 
     print("---- Creating Embeddings for the full dataset ---- ")
 
-    torch_create_embeddings.create_embeddings(config.IMG_PATH, encoder, config.EMBEDDING_PATH,
-                                              config.IMG_DICT_PATH, config.EMBEDDING_SHAPE, device)
+    torch_create_embeddings.create_embeddings(config.IMG_PATH, encoder, config.EMBEDDING_PATH, config.IMG_DICT_PATH,
+                                              config.EMBEDDING_SHAPE, device, angle_dict_path=config.ANGLE_DICT_PATH)
     print("Embeddings successfully created")

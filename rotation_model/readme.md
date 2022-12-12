@@ -1,5 +1,5 @@
 # CNN tom rotate scans of Coat of Arms
-Architecture based on this architecure which was originaly written with Keras: 
+Architecture based on this architecture which was originally written with Keras: 
 https://shiva-verma.medium.com/image-angle-detection-using-neural-networks-77f38524951c
 
 # Annotation

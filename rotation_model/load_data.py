@@ -21,7 +21,7 @@ class FolderDataset(Dataset):
         # Filter files by type
         self.all_imgs = []
         for file in os.listdir(img_path):
-            # check only text files
+            # check only img files
             if file.lower().endswith(('.png', 'jpg')):
                 self.all_imgs.append(file)
 
