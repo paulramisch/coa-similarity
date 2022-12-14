@@ -3,7 +3,6 @@ __all__ = ["FolderDataset"]
 import torch
 from PIL import Image
 import os
-from tqdm import tqdm
 from torch.utils.data import Dataset
 import pickle
 
@@ -53,20 +52,21 @@ class FolderDataset(Dataset):
         return len(self.all_imgs)
 
     def __getitem__(self, idx):
-        def create_tensor(directory, img_title, size):
-            # Open image
-            img_loc = os.path.join(directory, img_title)
-            image = Image.open(img_loc).convert("RGB")
+        img_loc = os.path.join(self.main_dir, self.all_imgs[idx])
 
-            # Transform image: Thumb to size, Center in black bg, transform
-            image.thumbnail((size, size))
-            img_processed = Image.new('RGB', (size, size), (0, 0, 0))
-            img_processed.paste(image, (int((size - image.width) / 2), int((size - image.height) / 2)))
-            tensor = self.transform_in(img_processed)
+        image = Image.open(img_loc).convert("RGB")
+        image_out = image.copy()
 
-            return tensor
+        size_pre = 132
+        image.thumbnail((size_pre, size_pre))
+        img_processed = Image.new('RGB', (size_pre, size_pre), (0, 0, 0))
+        img_processed.paste(image, (int((size_pre - image.width) / 2), int((size_pre - image.height) / 2)))
+        tensor_image_in = self.transform_in(img_processed)
 
-        tensor_image_in = create_tensor(self.main_dir, self.all_imgs[idx], self.tensor_dim)
-        tensor_image_out = create_tensor(self.main_dir_output, self.all_imgs_output[idx], self.tensor_dim)
+        # Out image
+        image_out.thumbnail((self.tensor_dim, self.tensor_dim))
+        img_processed_out = Image.new('RGB',  (self.tensor_dim, self.tensor_dim), (0, 0, 0))
+        img_processed_out.paste(image_out, (int((self.tensor_dim - image_out.width) / 2), int((self.tensor_dim - image_out.height) / 2)))
+        tensor_image_out = self.transform_out(img_processed_out)
 
         return tensor_image_in, tensor_image_out

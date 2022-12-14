@@ -77,8 +77,9 @@ def compare_umap(img_src, trans, coa_data, size):
     return coa_data_sorted[['0', 'euc_distance']].head(10).to_numpy()
 
 
-def test_model(coa_data, trans, size, data_path='../data/coa_renamed/',
-               test_data_path="../data/test_data.csv", test_data_secondary_path="../data/test_data_secondary.csv"):
+def test_model_umap(coa_data, trans, size, data_path='../data/coa_renamed/',
+                    test_data_path="../data/test_data.csv",
+                    test_data_secondary_path="../data/test_data_secondary.csv"):
 
     # Get test data
     test_data = list(csv.reader(open(test_data_path)))
@@ -86,6 +87,7 @@ def test_model(coa_data, trans, size, data_path='../data/coa_renamed/',
 
     # Set Score vars
     self = 0
+    self_10 = 0
     score = 0
     score_secondary = 0
 
@@ -95,12 +97,11 @@ def test_model(coa_data, trans, size, data_path='../data/coa_renamed/',
         self += 1 if image_list[0][0] == test[0] else 0
 
         for idy, img in enumerate(image_list):
-            # the first row is the img name itself
-            if idy > 0:
-                score += 1 if img[0] in test else 0
-                score_secondary += 1 if img[0] in test_data_secondary[idx] else 0
+            score += 1 if img[0] in test[1:] else 0
+            score_secondary += 1 if img[0] in test_data_secondary[idx][1:] else 0
+            self_10 += 1 if img[0] == test[0] else 0
 
-    return f"score: {score}, secondary score: {score_secondary}, self: {self}/{len(test_data)}"
+    return f"score: {score}, secondary score: {score_secondary}, self: {self}/{len(test_data)}, self in top-10: {self_10}/{len(test_data)}"
 
 
 if __name__ == "__main__":
@@ -109,7 +110,7 @@ if __name__ == "__main__":
     trans, size = train_umap_model(coa_data)
 
     compare_umap('../data/test_data/-1_G A lion cr..jpg', trans, coa_data, size)
-    test_model(coa_data, trans, size)
+    test_model_umap(coa_data, trans, size)
 
     # Test
     # Umap is stochastic: Not always the same: https://github.com/lmcinnes/umap/issues/566

@@ -1,12 +1,12 @@
 # Training script for Auto-Encoder.
 
 import torch
-import cnn_model.torch_model as torch_model
-import cnn_model.torch_engine as torch_engine
-import cnn_model.torch_data as torch_data
-import cnn_model.utils as utils
+import cnn_model_rgb.torch_model as torch_model
+import cnn_model_rgb.torch_engine as torch_engine
+import cnn_model_rgb.torch_data as torch_data
+import cnn_model_rgb.utils as utils
+import cnn_model_rgb.config as config
 import torchvision.transforms as T
-import cnn_model.config as config
 import numpy as np
 from tqdm import tqdm
 import torch.nn as nn
@@ -26,9 +26,9 @@ if __name__ == "__main__":
 
     transforms_in = T.Compose([T.RandomRotation(degrees=(-5, 5)),
                                # T.RandomPerspective(distortion_scale=0.05, p=1.0),
-                               # T.RandomCrop(size=(128, 128)),
-                               # T.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 5)),
-                               # T.ColorJitter(brightness=.3, hue=.1),
+                               T.RandomCrop(size=(128, 128)),
+                               T.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 5)),
+                               T.ColorJitter(brightness=.3, hue=.1),
                                # T.Grayscale(3),
                                T.ToTensor()
                                ])
@@ -58,7 +58,7 @@ if __name__ == "__main__":
         full_dataset, batch_size=config.FULL_BATCH_SIZE
     )
 
-    print("------------ Dataloader Cretead ------------")
+    print("------------ Dataloader Created ------------")
 
     # print(train_loader)
     loss_fn = nn.MSELoss()

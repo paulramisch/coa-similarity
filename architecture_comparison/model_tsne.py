@@ -83,8 +83,8 @@ def compare_tsne(img, tsne_result, coa_data, num=10):
 
 
 # Function to evaluate the model
-def test_model(coa_data, tsne_result, test_data_path="../data/test_data.csv",
-               test_data_secondary_path="../data/test_data_secondary.csv"):
+def test_model_tsne(coa_data, tsne_result, test_data_path="../data/test_data.csv",
+                    test_data_secondary_path="../data/test_data_secondary.csv"):
 
     # Get test data
     test_data = list(csv.reader(open(test_data_path)))

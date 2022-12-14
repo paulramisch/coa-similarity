@@ -7,8 +7,8 @@ __all__ = [
 
 import torch
 import numpy as np
-import cnn_model.config as config
-import cnn_model.torch_model as torch_model
+import cnn_model_rgb.config as config
+import cnn_model_rgb.torch_model as torch_model
 from sklearn.neighbors import NearestNeighbors
 import torchvision.transforms as T
 import os
@@ -220,24 +220,7 @@ def plot_similar_cnn(query, embedding, encoder, device, img_dict):
 if __name__ == "__main__":
     encoder, img_dict, embedding, device = set_vars()
 
-    examples = ['-1_O B lion rampant.jpg',
-                '6167_G O 2 barbels addorsed.jpg',
-                '22351_G E 3 chevrons.jpg',
-                '7807_G OOB 2 barbels addorsed, trefly & label.jpg',
-                '9177_O G 2 bars of lozenges.jpg',
-                '10449_G O 2 barbels addorsed.jpg',
-                "-1_A G 2 bear's heads addorsed.jpg",
-                '69_O G chief.jpg',
-                '4808_A G barry undy.jpg',
-                '6167_G O 2 barbels addorsed.jpg',
-                '6614_O G 4 pales.jpg',
-                '8363_ 3 fleurs-de-lis; 3 lions passt guard; =; =  {BO, GO}.jpg',
-                '32013_B A lion rampant.jpg']
-
-    for img in examples:
-        plot_similar_cnn('../data/coa/' + img, embedding, encoder, device, img_dict)
-
-    plot_similar_cnn('../data/edge_cases/7807_edited.jpg', embedding, encoder, device, img_dict)
+    plot_similar_cnn('../../data/coa_edited/7807_edited.jpg', embedding, encoder, device, img_dict)
 
     print("Hello")
 

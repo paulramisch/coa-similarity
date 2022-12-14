@@ -83,7 +83,7 @@ def compare(img_src, coa_data, pca, pca_features, size):
 
 
 # Function to evaluate the model
-def test_model(coa_data, pca, pca_features, size, data_path='../data/coa_renamed/',
+def test_model_pca(coa_data, pca, pca_features, size, data_path='../data/coa_renamed/',
                test_data_path="../data/test_data.csv", test_data_secondary_path="../data/test_data_secondary.csv"):
 
     # Get test data
