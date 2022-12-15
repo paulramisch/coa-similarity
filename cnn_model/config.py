@@ -1,7 +1,7 @@
 # REL_PATH = ""
 REL_PATH = "../"
-IMG_PATH = "{}data/coa_cutout/".format(REL_PATH)
-IMG_PATH_OUTPUT = "{}data/coa_cutout/".format(REL_PATH)
+IMG_PATH = "{}data/coa_renamed/".format(REL_PATH)
+IMG_PATH_OUTPUT = "{}data/coa_renamed/".format(REL_PATH)
 IMG_HEIGHT = 128  # The images are already resized here
 IMG_WIDTH = 128  # The images are already resized here
 
@@ -18,7 +18,7 @@ FULL_BATCH_SIZE = 32
 
 ###### Train and Test time #########
 DATA_PATH = "{}data/coa_renamed/".format(REL_PATH)
-MODEL_NAME = "_transformed17"
+MODEL_NAME = "_transformed20"
 AUTOENCODER_MODEL_PATH = "baseline_autoencoder{}.pt".format(REL_PATH, MODEL_NAME)
 ENCODER_MODEL_PATH = "{}data/models/deep_encoder{}.pt".format(REL_PATH, MODEL_NAME)
 DECODER_MODEL_PATH = "{}data/models/deep_decoder{}.pt".format(REL_PATH, MODEL_NAME)
@@ -30,4 +30,4 @@ EMBEDDING_SHAPE = (1, 64, 16, 16)
 
 ###### Test time #########
 NUM_IMAGES = 10
-TEST_IMAGE_PATH = "../data/coa_resized/-1_O B lion rampant.jpg"
+TEST_IMAGE_PATH = "../data/coa_renamed/-1_O B lion rampant.jpg"

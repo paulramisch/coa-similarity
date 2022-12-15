@@ -14,8 +14,9 @@ import numpy as np
 def create_embeddings(img_path, encoder, embedding_path, shape, device, dict_path, angle_path=None):
     transforms = T.Compose([T.ToTensor()])
 
-    full_dataset = torch_data.FolderDataset(img_path, config.IMG_PATH_OUTPUT, dict_path, transforms, transforms, 128,
-                                            angle_path)
+    full_dataset = torch_data.FolderDataset(img_path, config.IMG_PATH_OUTPUT, dict_path, transform_in=transforms,
+                                            transform_out=transforms, tensor_dim=128, angle_dict_path=angle_path)
+
     full_loader = torch.utils.data.DataLoader(full_dataset, batch_size=config.FULL_BATCH_SIZE)
 
     embedding = torch_engine.create_embedding(encoder, full_loader, shape, device)
@@ -32,8 +33,16 @@ def create_embeddings(img_path, encoder, embedding_path, shape, device, dict_pat
 # Create embeddings
 if __name__ == "__main__":
     # Set model
-    model_name = "_transformed17"
+    model_name = "_transformed18"
     model_path = "../data/models/"
+
+    # Set model paths
+    img_path = "../data/coa_renamed/".format(model_name)
+    encoder_path = "{}deep_encoder{}.pt".format(model_path, model_name)
+    embedding_path = "{}data_embedding_f{}.npy".format(model_path, model_name)
+    dict_path = "{}img_dict{}.pkl".format(model_path, model_name)
+    angle_path = "../data/coa_rotation_angle_rounded-dict.csv"
+    shape = config.EMBEDDING_SHAPE
 
     # Set devicee
     if torch.cuda.is_available():
@@ -42,14 +51,6 @@ if __name__ == "__main__":
         device = "mps"
     else:
         device = "cpu"
-
-    # Set model paths
-    img_path = "../data/coa_cutout/".format(model_name)
-    encoder_path = "{}deep_encoder{}.pt".format(model_path, model_name)
-    embedding_path = "{}data_embedding_f{}.npy".format(model_path, model_name)
-    dict_path = "{}img_dict{}.pkl".format(model_path, model_name)
-    angle_path = "../data/coa_rotation_angle_rounded-dict.csv"
-    shape = config.EMBEDDING_SHAPE
 
     # Load encoder
     encoder = torch_model.ConvEncoder()

@@ -4,8 +4,12 @@ import rotation_model as model
 import csv
 import helper_functions
 
+# Set hyperparameter
+edge_layer = True
+size = 128
+
 # Load model
-model = model.Model()
+model = model.Model(edge_layer)
 model.load_state_dict(torch.load('../data/rotation_model/rotation_model.pt'))
 model.eval()
 
@@ -29,11 +33,12 @@ true_15 = 0
 
 # Check img quality
 for img_title in all_imgs:
-    prediction = int(helper_functions.predict_angle(model, img_path, img_title, size=128))
+    prediction = int(helper_functions.predict_angle(model, img_path, img_title, size, edge_layer))
     real = int(angle_dict.get(img_title, 0))
     difference = real - prediction
 
-    # print(f"{img_title}: angle: {real}, prediction: {prediction}, difference: {difference}")
+    if difference > 10:
+        print(f"{img_title}: angle: {real}, prediction: {prediction}, difference: {difference}")
 
     true_5 += 1 if abs(difference) < 5 else 0
     true_10 += 1 if abs(difference) < 10 else 0

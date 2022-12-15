@@ -2,7 +2,7 @@
 import cv2
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
-import csv
+import kornia
 
 # Function to plot results
 def plot_similar_images_grid(query, img_list, title='', sim_path='../data/coa_renamed/', img_size=128):
@@ -109,7 +109,7 @@ def resize(img, size=100, bg_color=0):
 
 
 # Function to process image
-def process_img(img, size, color=True, flatten=True):
+def process_img(img, size, color=True, flatten=True, edge=False):
     # Resize
     resized = resize(img, size)
 
@@ -121,8 +121,25 @@ def process_img(img, size, color=True, flatten=True):
         # Convert to BW
         processed = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)
 
-    # Create image vectors and return
-    if flatten:
-        processed = processed.flatten()
+    # edge detection
+    if edge:
+        canny = kornia.filters.Canny()
 
-    return processed
+        # Make image a tensor
+        data = kornia.image_to_tensor(processed, keepdim=False)
+        edge_layer_tensor = canny(data.float())[1]
+        edge_layer = kornia.tensor_to_image(edge_layer_tensor.byte()).flatten()
+
+        # Thumb the images
+        processed = cv2.resize(processed, (int(size / 5), int(size / 5)), interpolation=cv2.INTER_AREA).flatten()
+
+        # Combine layers
+        processed = np.concatenate((processed, edge_layer), axis=0)
+
+        return processed
+
+    elif flatten:
+        return processed.flatten()
+
+    else:
+        return processed

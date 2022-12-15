@@ -63,14 +63,14 @@ https://github.com/ankonzoid/artificio/tree/master/image_retrieval (abgerufen: 2
 Gute Ressourcen für PCA wurden für Eigenfaces geschrieben, wahrscheinlich möglich, solches nachzuahmen:
 
 Implementierung:
-Dario Radečić, Eigenfaces — Face Classification in Python, medium.com Towards Data Science 2020,
++ Dario Radečić, Eigenfaces — Face Classification in Python, medium.com Towards Data Science 2020,
 https://towardsdatascience.com/eigenfaces-face-classification-in-python-7b8d2af3d3ea (abgerufen: 14.10.22).
 
-The eigenfaces example: chaining PCA and SVMs, scipy-lectures.org/, 
++ The eigenfaces example: chaining PCA and SVMs, scipy-lectures.org/, 
 https://scipy-lectures.org/packages/scikit-learn/auto_examples/plot_eigenfaces.html (abgerufen: 14.10.22).
 
 (mit Google Colab sheet)
-Wenjing Liu, How to Get Eigenfaces, medium.com 2013,
++ Wenjing Liu, How to Get Eigenfaces, medium.com 2013,
 https://medium.com/@lwj.liuwenjing/how-to-get-eigenfaces-a9caeeba8767 (abgerufen: 14.10.22).
 
 Github

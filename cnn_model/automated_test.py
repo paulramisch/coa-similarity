@@ -38,9 +38,9 @@ def test_model(encoder, img_dict, embedding, device, data_path='../data/coa_rena
 
 if __name__ == "__main__":
     # Parameter
-    MODEL_NAME = "_transformed14"
+    MODEL_NAME = "_transformed20"
     REL_PATH = "../"
-    angle = False
+    angle = True
 
     # Set variable paths
     data = "{}data/coa_renamed/".format(REL_PATH)

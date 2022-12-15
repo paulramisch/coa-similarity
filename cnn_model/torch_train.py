@@ -25,18 +25,20 @@ if __name__ == "__main__":
 
     utils.seed_everything(config.SEED)
 
-    transforms_in = T.Compose([T.RandomRotation(degrees=(-5, 5)),
-                               T.RandomPerspective(distortion_scale=0.03, p=1.0),
-                               # T.RandomCrop(size=(128, 128)),
-                               # T.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 5)),
+    transforms_in = T.Compose([# T.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 5)),
                                T.ColorJitter(brightness=.3, hue=.1),
                                T.ToTensor()
                                ])
+    transform_in_after = T.Compose([T.RandomRotation(degrees=(-5, 5)),
+                                    T.RandomPerspective(distortion_scale=0.03, p=1.0),
+                                    # T.RandomCrop(size=(128, 128))
+                                    ])
     transforms_out = T.Compose([T.ToTensor()])
 
     print("------------ Creating Dataset ------------")
     full_dataset = torch_data.FolderDataset(config.IMG_PATH, config.IMG_PATH_OUTPUT, config.IMG_DICT_PATH,
-                                            transforms_in, transforms_out, 128, config.ANGLE_DICT_PATH)
+                                            transforms_in, transform_in_after, transforms_out,
+                                            128, config.ANGLE_DICT_PATH)
 
     train_size = int(config.TRAIN_RATIO * len(full_dataset))
     val_size = len(full_dataset) - train_size
@@ -78,7 +80,8 @@ if __name__ == "__main__":
     # print(device)
 
     autoencoder_params = list(encoder.parameters()) + list(decoder.parameters())
-    optimizer = optim.AdamW(autoencoder_params, lr=config.LEARNING_RATE)
+    # optimizer = optim.AdamW(autoencoder_params, lr=config.LEARNING_RATE)
+    optimizer = optim.AdamW(autoencoder_params, lr=config.LEARNING_RATE, weight_decay=1e-5)
 
     # early_stopper = utils.EarlyStopping(patience=5, verbose=True, path=)
     max_loss = 9999
@@ -107,6 +110,7 @@ if __name__ == "__main__":
 
     print("---- Creating Embeddings for the full dataset ---- ")
 
-    torch_create_embeddings.create_embeddings(config.IMG_PATH, encoder, config.EMBEDDING_PATH, config.IMG_DICT_PATH,
-                                              config.EMBEDDING_SHAPE, device, angle_dict_path=config.ANGLE_DICT_PATH)
+    torch_create_embeddings.create_embeddings(config.IMG_PATH, encoder, config.EMBEDDING_PATH,
+                                              config.EMBEDDING_SHAPE, device, config.IMG_DICT_PATH,
+                                              config.ANGLE_DICT_PATH)
     print("Embeddings successfully created")

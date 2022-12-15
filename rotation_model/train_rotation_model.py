@@ -18,6 +18,8 @@ model_path = "../data/rotation_model/rotation_model.pt"
 img_path = "../data/coa_renamed"
 angle_data_path = "../data/coa_rotation_angle_rounded-dict.csv"
 random_seed = 42
+edge_detection = True
+add_mirrored_test_data = True
 
 # Set device
 if __name__ == "__main__":
@@ -29,7 +31,7 @@ if __name__ == "__main__":
         device = "cpu"
 
 # Load data
-full_dataset = load_data.FolderDataset(img_path, angle_data_path, img_size)
+full_dataset = load_data.FolderDataset(img_path, angle_data_path, img_size, edge_detection, add_mirrored_test_data)
 
 train_size = int(train_share * len(full_dataset))
 val_size = len(full_dataset) - train_size
@@ -41,7 +43,7 @@ train_loader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,
 val_loader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, drop_last=True)
 
 # Declare model
-model = model.Model().to(device)
+model = model.Model(edge_detection).to(device)
 
 # Add loss function
 loss_fn = nn.MSELoss()

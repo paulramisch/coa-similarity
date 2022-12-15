@@ -21,3 +21,11 @@ tested on all 3.000 images, epochs = 10 (used Nr. 3) batch_size = 32, edge_finde
 
 tested on all 3.000 images, epochs = 10 batch_size = 32:
 0.9048569527611444 % within right 5%, 0.9540918163672655 % within right 10%, 96 % within right 15 %
+
+tested on all 3.000 images, epochs = 10 batch_size = 32:,  edge_finder_feature:
+0.917831004657352 % within right 5%, 0.9750499001996008 % within right 10%, 0.9866932801064537 % within right 15 %
+
+tested on 3.000 images + mirrored, epochs = 10 batch_size = 32:, 9th used,  edge_finder_feature:
+0.9151696606786427 % within right 5%, 0.9770459081836327 % within right 10%, 0.9893546240851631 % within right 15 %
+
+# Therefore 

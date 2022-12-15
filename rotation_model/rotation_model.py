@@ -6,11 +6,13 @@ import torch.nn.functional as F
 
 
 class Model(nn.Module):
-    def __init__(self):
+    def __init__(self, edge_detection=False):
         super().__init__()
 
+        self.channels = 5 if edge_detection else 3
+
         # Input image size 128, 128, 3
-        self.conv1 = nn.Conv2d(3, 50, 5, stride=2)
+        self.conv1 = nn.Conv2d(self.channels, 50, 5, stride=2)
         self.dropout1 = nn.Dropout(p=0.3)
 
         self.conv2 = nn.Conv2d(50, 100, 3, stride=2)

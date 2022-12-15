@@ -20,10 +20,14 @@ def create_feature(images, pca):
     return pca.transform(images)
 
 
-def train_pca_model(coa_data, components_all=False, components=20):
-    # Img size: Square root of the number of columns, minus the label column (RGB)
-    # If greyscale: size = int((coa_data.shape[1] - 1) ** (1/2))
-    size = int(((coa_data.shape[1] - 1) / 3) ** (1/2))
+def train_pca_model(coa_data, components_all=False, components=20, edge=False, greyscale=False):
+    if edge:
+        size = int(((coa_data.shape[1] - 1) / 28) ** (1 / 2) * 5)
+    elif greyscale:
+        size = int((coa_data.shape[1] - 1) ** (1 / 2))
+    else:
+        # Img size: Square root of the number of columns, minus the label column (RGB)
+        size = int(((coa_data.shape[1] - 1) / 3) ** (1/2))
 
     # Data prep
     coa_data_img = coa_data.copy().drop('0', axis=1)
@@ -49,18 +53,18 @@ def plot_most_similar(pixels):
 
 
 # Function to plot the grid view
-def plot_similar_pca(query, coa_data, pca, pca_features, size):
-    image_list = compare(query, coa_data, pca, pca_features, size)
+def plot_similar_pca(query, coa_data, pca, pca_features, size, edge=False):
+    image_list = compare(query, coa_data, pca, pca_features, size, edge=edge)
     return plot_similar_images_grid(query, image_list, 'PCA-Model')
 
 
 # Function to compare
-def compare(img_src, coa_data, pca, pca_features, size):
+def compare(img_src, coa_data, pca, pca_features, size, edge=False):
     # Load image
     img = cv2.imread(img_src)
 
     # Transform image
-    coa = process_img(img, size)
+    coa = process_img(img, size, edge=edge)
 
     # Reformat as DataFrame
     coa_df = pd.DataFrame([np.concatenate((['coa'], coa))]).drop(0, axis=1)
@@ -83,7 +87,7 @@ def compare(img_src, coa_data, pca, pca_features, size):
 
 
 # Function to evaluate the model
-def test_model_pca(coa_data, pca, pca_features, size, data_path='../data/coa_renamed/',
+def test_model_pca(coa_data, pca, pca_features, size, edge=False, data_path='../data/coa_renamed/',
                test_data_path="../data/test_data.csv", test_data_secondary_path="../data/test_data_secondary.csv"):
 
     # Get test data
@@ -97,7 +101,7 @@ def test_model_pca(coa_data, pca, pca_features, size, data_path='../data/coa_ren
 
     # Iterate over test_data
     for idx, test in enumerate(test_data):
-        image_list = compare(data_path + test[0], coa_data, pca, pca_features, size)
+        image_list = compare(data_path + test[0], coa_data, pca, pca_features, size, edge)
         self += 1 if image_list[0][0] == test[0] else 0
 
         for idy, img in enumerate(image_list):
@@ -112,10 +116,12 @@ def test_model_pca(coa_data, pca, pca_features, size, data_path='../data/coa_ren
 
 if __name__ == "__main__":
     # Load data
-    coa_data = pd.read_csv('../data/training-data_100x100_rgb.csv')
+    # coa_data = pd.read_csv('../data/training-data_100x100_rgb.csv')
+    coa_data = pd.read_csv('../data/training-data_edge_100x100_rgb.csv')
 
     # Train model
-    pca, pca_features, size = train_pca_model(coa_data)
+    pca, pca_features, size = train_pca_model(coa_data, edge=True)
 
     # Compare image
-    compare('../data/test_data/1.png', coa_data, pca, pca_features, size)
+    # compare('../coa_renamed/test_data/-1_ 3 birds; lion; =; =   {AS, GA}.jpg', coa_data, pca, pca_features, size)
+    compare('../data/coa_renamed/-1_ 3 birds; lion; =; =   {AS, GA}.jpg', coa_data, pca, pca_features, size, edge=True)
