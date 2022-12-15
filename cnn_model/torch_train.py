@@ -109,6 +109,11 @@ if __name__ == "__main__":
     print("Training Done")
 
     print("---- Creating Embeddings for the full dataset ---- ")
+    # load best encoder
+    encoder = torch_model.ConvEncoder()
+    encoder.load_state_dict(torch.load(config.ENCODER_MODEL_PATH, map_location=device))
+    encoder.eval()
+    encoder.to(device)
 
     torch_create_embeddings.create_embeddings(config.IMG_PATH, encoder, config.EMBEDDING_PATH,
                                               config.EMBEDDING_SHAPE, device, config.IMG_DICT_PATH,

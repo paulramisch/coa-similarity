@@ -64,7 +64,7 @@ class FolderDataset(Dataset):
         return len(self.all_imgs)
 
     def __getitem__(self, idx):
-        def create_tensor(directory, img_title, size, noise=False, clip_edge=True):
+        def create_tensor(directory, img_title, size, noise=False, clip_edge=True, normalize=True):
             # Open image
             img_loc = os.path.join(directory, img_title)
             image = Image.open(img_loc).convert("RGB")
@@ -113,9 +113,10 @@ class FolderDataset(Dataset):
             tensor_transformed = rgb_transforms(rgb_transforms(tensor_rgb))
 
             # Normalize
-            mean, std = tensor_transformed.mean([1, 2]), tensor_transformed.std([1, 2])
-            normalizer = T.Compose([T.Normalize(mean, std)])
-            tensor_transformed = normalizer(tensor_transformed)
+            if normalize:
+                mean, std = tensor_transformed.mean([1, 2]), tensor_transformed.std([1, 2])
+                normalizer = T.Compose([T.Normalize(mean, std)])
+                tensor_transformed = normalizer(tensor_transformed)
 
             # Combine vectors
             tensor = torch.cat((tensor_transformed, edge_layer), 0)

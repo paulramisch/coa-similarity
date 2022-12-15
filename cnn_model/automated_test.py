@@ -4,7 +4,7 @@ import csv
 
 def test_model(encoder, img_dict, embedding, device, data_path='../data/coa_renamed/',
                test_data_path="../data/test_data.csv", test_data_secondary_path="../data/test_data_secondary.csv",
-               angle=False, angle_dict_path="../data/coa_rotation_angle_rounded-dict.csv"):
+               angle=True, angle_dict_path="../data/coa_rotation_angle_rounded-dict.csv"):
     # Get test data
     test_data = list(csv.reader(open(test_data_path)))
     test_data_secondary = list(csv.reader(open(test_data_secondary_path)))
@@ -33,20 +33,25 @@ def test_model(encoder, img_dict, embedding, device, data_path='../data/coa_rena
             if idy > 0:
                 score += 1 if img[0] in test else 0
                 score_secondary += 1 if img[0] in test_data_secondary[idx] else 0
-        plot_similar_cnn(data_path + test[0], embedding, encoder, device, img_dict, 20).show()
-    return f"{MODEL_NAME} score: {score}, secondary score: {score_secondary}, self: {self}/{len(test_data)}"
+        # plot_similar_cnn(data_path + test[0], embedding, encoder, device, img_dict, 20, test[0], angle_dict).show()
+
+        # Set model_name
+        if 'model_name' not in globals():
+            model_name = 'Autoencoder'
+
+    return f"{model_name} score: {score}, secondary score: {score_secondary}, self: {self}/{len(test_data)}"
 
 if __name__ == "__main__":
     # Parameter
-    MODEL_NAME = "_transformed20"
+    model_name = "_transformed20"
     REL_PATH = "../"
     angle = True
 
     # Set variable paths
     data = "{}data/coa_renamed/".format(REL_PATH)
-    src_encoder = "{}data/models/deep_encoder{}.pt".format(REL_PATH, MODEL_NAME)
-    src_dict = "{}data/models/img_dict{}.pkl".format(REL_PATH, MODEL_NAME)
-    src_embedding = "{}data/models/data_embedding_f{}.npy".format(REL_PATH, MODEL_NAME)
+    src_encoder = "{}data/models/deep_encoder{}.pt".format(REL_PATH, model_name)
+    src_dict = "{}data/models/img_dict{}.pkl".format(REL_PATH, model_name)
+    src_embedding = "{}data/models/data_embedding_f{}.npy".format(REL_PATH, model_name)
 
     encoder, img_dict, embedding, device = set_vars(src_encoder, src_dict, src_embedding)
     result = test_model(encoder, img_dict, embedding, device, data, angle=angle)

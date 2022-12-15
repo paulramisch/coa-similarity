@@ -1,7 +1,6 @@
 __all__ = [
     "load_image_tensor",
     "compute_similar_images",
-    "compute_similar_features",
     "plot_similar_images",
 ]
 
@@ -20,7 +19,7 @@ import pickle
 import kornia
 
 
-def load_image_tensor(image_path, device, file_name="", angle_dict=None):
+def load_image_tensor(image_path, device, file_name="", angle_dict=None, clip_edge=True, normalize=True):
     """
     Loads a given image to device.
     Args:
@@ -28,15 +27,24 @@ def load_image_tensor(image_path, device, file_name="", angle_dict=None):
     device: "cuda" or "cpu"
     """
     image = Image.open(image_path)
-    image.thumbnail((config.IMG_WIDTH, config.IMG_HEIGHT))
-    img_processed = Image.new('RGB',  (config.IMG_WIDTH, config.IMG_HEIGHT), (0, 0, 0))
-    img_processed.paste(image, (int((config.IMG_WIDTH - image.width) / 2), int((config.IMG_HEIGHT - image.height) / 2)))
+    size = config.IMG_WIDTH
+    image.thumbnail((size, size))
+    img_processed = Image.new('RGB',  (size, size), (0, 0, 0))
+    img_processed.paste(image, (int((size - image.width) / 2), int((size - image.height) / 2)))
 
     transforms = T.Compose([T.ToTensor()])
     tensor_rgb = transforms(img_processed)
 
     # Edge detection
     edge_layer = kornia.filters.canny(tensor_rgb[None, :])[1].view(1, 128, 128)
+
+    # Clip side edges
+    if clip_edge:
+        crop_x = int((size - image.width) / 2) * 2 + 4 if image.width < size else 0
+        crop_y = int((size - image.height) / 2) * 2 + 4 if image.height < size else 0
+
+        crop = T.Compose([T.CenterCrop(size=(size - crop_y, size - crop_x)), T.Pad((int(crop_x / 2), int(crop_y / 2)))])
+        edge_layer = crop(edge_layer)
 
     # Rotation
     if angle_dict is not None:
@@ -52,9 +60,10 @@ def load_image_tensor(image_path, device, file_name="", angle_dict=None):
     tensor_transformed = rgb_transforms(rgb_transforms(tensor_rgb))
 
     # Normalize
-    mean, std = tensor_transformed.mean([1, 2]), tensor_transformed.std([1, 2])
-    normalizer = T.Compose([T.Normalize(mean, std)])
-    tensor_transformed = normalizer(tensor_transformed)
+    if normalize:
+        mean, std = tensor_transformed.mean([1, 2]), tensor_transformed.std([1, 2])
+        normalizer = T.Compose([T.Normalize(mean, std)])
+        tensor_transformed = normalizer(tensor_transformed)
 
     # Combine vectors
     tensor = torch.cat((tensor_transformed, edge_layer), 0)
@@ -177,52 +186,6 @@ def plot_similar_images_grid(query, img_list, title='', sim_path=config.DATA_PAT
 
     return grid
 
-
-def compute_similar_features(image_path, num_images, embedding, nfeatures=30):
-    """
-    Given a image, it computes features using ORB detector and finds similar images to it
-    Args:
-    image_path: Path to image whose features and simlar images are required.
-    num_images: Number of similar images required.
-    embedding: 2 Dimensional Embedding vector.
-    nfeatures: (optional) Number of features ORB needs to compute
-    """
-
-    image = cv2.imread(image_path)
-    orb = cv2.ORB_create(nfeatures=nfeatures)
-
-    # Detect features
-    keypoint_features = orb.detect(image)
-    # compute the descriptors with ORB
-    keypoint_features, des = orb.compute(image, keypoint_features)
-
-    # des contains the description to features
-
-    des = des / 255.0
-    des = np.expand_dims(des, axis=0)
-    des = np.reshape(des, (des.shape[0], -1))
-    # print(des.shape)
-    # print(embedding.shape)
-
-    pca = PCA(n_components=des.shape[-1])
-    reduced_embedding = pca.fit_transform(
-        embedding,
-    )
-    # print(reduced_embedding.shape)
-
-    knn = NearestNeighbors(n_neighbors=num_images, metric="cosine")
-    knn.fit(reduced_embedding)
-    distances, indices = knn.kneighbors(des)
-
-    image_list = []
-    for idx, indice in enumerate(indices[0]):
-        if indice != 0:
-            # index 0 is a dummy embedding.
-            img_name = str(img_dict.get(indice - 1))
-            image_list.append([img_name, distances[0][idx]])
-
-    return image_list
-
 def set_vars(src_encoder=config.ENCODER_MODEL_PATH, src_dict=config.IMG_DICT_PATH, src_embedding=config.EMBEDDING_PATH):
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     encoder = torch_model.ConvEncoder()
@@ -241,31 +204,15 @@ def set_vars(src_encoder=config.ENCODER_MODEL_PATH, src_dict=config.IMG_DICT_PAT
 
     return encoder, img_dict, embedding, device
 
-def plot_similar_cnn(query, embedding, encoder, device, img_dict, num = config.NUM_IMAGES):
-    image_list = compute_similar_images(query, num, embedding, encoder, device, img_dict)
+def plot_similar_cnn(query, embedding, encoder, device, img_dict,
+                     num = config.NUM_IMAGES, img="", angle_dict=None):
+    image_list = compute_similar_images(query, num, embedding, encoder, device, img_dict, img, angle_dict)
     return plot_similar_images_grid(query, image_list, 'CNN-Model')
 
 if __name__ == "__main__":
     encoder, img_dict, embedding, device = set_vars()
 
-    examples = ['-1_O B lion rampant.jpg',
-                '6167_G O 2 barbels addorsed.jpg',
-                '22351_G E 3 chevrons.jpg',
-                '7807_G OOB 2 barbels addorsed, trefly & label.jpg',
-                '9177_O G 2 bars of lozenges.jpg',
-                '10449_G O 2 barbels addorsed.jpg',
-                "-1_A G 2 bear's heads addorsed.jpg",
-                '69_O G chief.jpg',
-                '4808_A G barry undy.jpg',
-                '6167_G O 2 barbels addorsed.jpg',
-                '6614_O G 4 pales.jpg',
-                '8363_ 3 fleurs-de-lis; 3 lions passt guard; =; =  {BO, GO}.jpg',
-                '32013_B A lion rampant.jpg']
-
-    for img in examples:
-        plot_similar_cnn('../data/coa/' + img, embedding, encoder, device, img_dict)
-
-    plot_similar_cnn('../data/edge_cases/7807_edited.jpg', embedding, encoder, device, img_dict)
+    plot_similar_cnn('../data/coa_edited/7807_edited.jpg', embedding, encoder, device, img_dict)
 
     print("Hello")
 
