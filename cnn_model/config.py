@@ -16,7 +16,7 @@ TRAIN_BATCH_SIZE = 32
 TEST_BATCH_SIZE = 32
 FULL_BATCH_SIZE = 32
 
-###### Train and Test time #########
+# Train and Test
 DATA_PATH = "{}data/coa_renamed/".format(REL_PATH)
 MODEL_NAME = "_transformed20"
 AUTOENCODER_MODEL_PATH = "baseline_autoencoder{}.pt".format(REL_PATH, MODEL_NAME)
@@ -28,6 +28,6 @@ ANGLE_DICT_PATH = "{}data/coa_rotation_angle_rounded-dict.csv".format(REL_PATH)
 EMBEDDING_SHAPE = (1, 64, 16, 16)
 # TEST_RATIO = 0.2
 
-###### Test time #########
+# Test time
 NUM_IMAGES = 10
 TEST_IMAGE_PATH = "../data/coa_renamed/-1_O B lion rampant.jpg"

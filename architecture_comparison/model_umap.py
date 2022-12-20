@@ -15,14 +15,20 @@ import csv
 warnings.filterwarnings('ignore')
 
 
-def train_umap_model(coa_data, n_neighbors=100, min_dist=0.3, n_components=30):
+def train_umap_model(coa_data, n_neighbors=100, min_dist=0.3, n_components=30, edge=False, greyscale=False):
     # Load data
     np.random.seed(42)
     coa_data.head()
 
     # Img size: Square root of the number of columns, minus the label column (RGB)
     # If greyscale: size = int((coa_data.shape[1] - 1) ** (1/2))
-    size = int(((coa_data.shape[1] - 1) / 3) ** (1/2))
+    if edge:
+        size = int(((coa_data.shape[1] - 1) / 28) ** (1 / 2) * 5)
+    elif greyscale:
+        size = int((coa_data.shape[1] - 1) ** (1 / 2))
+    else:
+        # Img size: Square root of the number of columns, minus the label column (RGB)
+        size = int(((coa_data.shape[1] - 1) / 3) ** (1/2))
 
     # Data prep
     coa_data_img = coa_data.copy().drop('0', axis=1) / 257
@@ -44,18 +50,18 @@ def plot_most_similar(pixels, size):
 
 
 # Function to plot the grid view
-def plot_similar_umap(query, trans, coa_data, size):
-    image_list = compare_umap(query, trans, coa_data, size)
+def plot_similar_umap(query, trans, coa_data, size, edge=False):
+    image_list = compare_umap(query, trans, coa_data, size, edge)
     return plot_similar_images_grid(query, image_list, 'UMAP-Model')
 
 
 # Function to compare
-def compare_umap(img_src, trans, coa_data, size):
+def compare_umap(img_src, trans, coa_data, size, edge=False):
     # Load image
     img = cv2.imread(img_src)
 
     # Transform image
-    coa = process_img(img, size) / 255
+    coa = process_img(img, size, edge=edge) / 255
 
     # Reformat as DataFrame
     coa_df = pd.DataFrame([np.concatenate((['coa'], coa))]).drop(0, axis=1)
@@ -77,7 +83,7 @@ def compare_umap(img_src, trans, coa_data, size):
     return coa_data_sorted[['0', 'euc_distance']].head(10).to_numpy()
 
 
-def test_model_umap(coa_data, trans, size, data_path='../data/coa_renamed/',
+def test_model_umap(coa_data, trans, size, edge=False, data_path='../data/coa_renamed/',
                     test_data_path="../data/test_data.csv",
                     test_data_secondary_path="../data/test_data_secondary.csv"):
 
@@ -93,7 +99,7 @@ def test_model_umap(coa_data, trans, size, data_path='../data/coa_renamed/',
 
     # Iterate over test_data
     for idx, test in enumerate(test_data):
-        image_list = compare_umap(data_path + test[0], trans, coa_data, size)
+        image_list = compare_umap(data_path + test[0], trans, coa_data, size, edge)
         self += 1 if image_list[0][0] == test[0] else 0
 
         for idy, img in enumerate(image_list):

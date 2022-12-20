@@ -92,7 +92,7 @@ class FolderDataset(Dataset):
                 crop = T.Compose([T.CenterCrop(size=(size - crop_y, size - crop_x)), T.Pad((int(crop_x/2), int(crop_y/2)))])
                 edge_layer = crop(edge_layer)
 
-            # Rotation etc.
+            # random rotation etc.
             if self.transform_in_after:
                 tensor_rgb = self.transform_in_after(tensor_rgb)
                 edge_layer = self.transform_in_after(edge_layer)

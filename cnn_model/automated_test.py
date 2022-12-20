@@ -35,11 +35,7 @@ def test_model(encoder, img_dict, embedding, device, data_path='../data/coa_rena
                 score_secondary += 1 if img[0] in test_data_secondary[idx] else 0
         # plot_similar_cnn(data_path + test[0], embedding, encoder, device, img_dict, 20, test[0], angle_dict).show()
 
-        # Set model_name
-        if 'model_name' not in globals():
-            model_name = 'Autoencoder'
-
-    return f"{model_name} score: {score}, secondary score: {score_secondary}, self: {self}/{len(test_data)}"
+    return f"Score: {score}, secondary score: {score_secondary}, self: {self}/{len(test_data)}"
 
 if __name__ == "__main__":
     # Parameter

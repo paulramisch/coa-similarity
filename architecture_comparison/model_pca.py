@@ -116,8 +116,8 @@ def test_model_pca(coa_data, pca, pca_features, size, edge=False, data_path='../
 
 if __name__ == "__main__":
     # Load data
-    # coa_data = pd.read_csv('../data/training-data_100x100_rgb.csv')
-    coa_data = pd.read_csv('../data/training-data_edge_100x100_rgb.csv')
+    # coa_data = pd.read_csv('../data/coa_csv/training-data_100x100_rgb.csv')
+    coa_data = pd.read_csv('../data/coa_csv/training-data_edge_100x100_rgb.csv')
 
     # Train model
     pca, pca_features, size = train_pca_model(coa_data, edge=True)

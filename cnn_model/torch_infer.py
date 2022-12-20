@@ -2,6 +2,7 @@ __all__ = [
     "load_image_tensor",
     "compute_similar_images",
     "plot_similar_images",
+    "set_vars"
 ]
 
 import torch
@@ -11,21 +12,13 @@ import cnn_model.torch_model as torch_model
 from sklearn.neighbors import NearestNeighbors
 import torchvision.transforms as T
 import os
-import cv2
 from PIL import Image, ImageDraw, ImageFont
 import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
 import pickle
 import kornia
 
 
 def load_image_tensor(image_path, device, file_name="", angle_dict=None, clip_edge=True, normalize=True):
-    """
-    Loads a given image to device.
-    Args:
-    image_path: path to image to be loaded.
-    device: "cuda" or "cpu"
-    """
     image = Image.open(image_path)
     size = config.IMG_WIDTH
     image.thumbnail((size, size))
@@ -77,19 +70,7 @@ def load_image_tensor(image_path, device, file_name="", angle_dict=None, clip_ed
 
 
 def compute_similar_images(image_path, num_images, embedding, encoder, device, img_dict, file_name="", angle_dict=None):
-    """
-    Given an image and number of similar images to generate.
-    Returns the num_images closest nearest images.
-
-    Args:
-    image_path: Path to image whose similar images are to be found.
-    num_images: Number of similar images to find.
-    embedding : A (num_images, embedding_dim) Embedding of images learnt from auto-encoder.
-    device : "cuda" or "cpu" device.
-    """
-
     image_tensor = load_image_tensor(image_path, device, file_name, angle_dict)
-    # image_tensor = image_tensor.to(device)
 
     with torch.no_grad():
         image_embedding = encoder(image_tensor).cpu().detach().numpy()
@@ -109,7 +90,7 @@ def compute_similar_images(image_path, num_images, embedding, encoder, device, i
         if indice != 0:
             # index 0 is a dummy embedding.
             img_name = str(img_dict.get(indice - 1))
-            image_list.append([img_name, distances[0][idx]])
+            image_list.append([img_name, float(distances[0][idx])])
 
     return image_list
 
@@ -186,6 +167,7 @@ def plot_similar_images_grid(query, img_list, title='', sim_path=config.DATA_PAT
 
     return grid
 
+
 def set_vars(src_encoder=config.ENCODER_MODEL_PATH, src_dict=config.IMG_DICT_PATH, src_embedding=config.EMBEDDING_PATH):
     device = torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
     encoder = torch_model.ConvEncoder()
@@ -204,10 +186,12 @@ def set_vars(src_encoder=config.ENCODER_MODEL_PATH, src_dict=config.IMG_DICT_PAT
 
     return encoder, img_dict, embedding, device
 
+
 def plot_similar_cnn(query, embedding, encoder, device, img_dict,
                      num = config.NUM_IMAGES, img="", angle_dict=None):
     image_list = compute_similar_images(query, num, embedding, encoder, device, img_dict, img, angle_dict)
     return plot_similar_images_grid(query, image_list, 'CNN-Model')
+
 
 if __name__ == "__main__":
     encoder, img_dict, embedding, device = set_vars()

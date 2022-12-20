@@ -33,7 +33,7 @@ def create_embeddings(img_path, encoder, embedding_path, shape, device, dict_pat
 # Create embeddings
 if __name__ == "__main__":
     # Set model
-    model_name = "_transformed24"
+    model_name = "_transformed20"
     model_path = "../data/models/"
 
     # Set model paths

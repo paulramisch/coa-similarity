@@ -48,4 +48,4 @@ rel_5 = true_5 / len(all_imgs)
 rel_10 = true_10 / len(all_imgs)
 rel_15 = true_15 / len(all_imgs)
 
-print(f"{rel_5} % within right 5%, {rel_10} % within right 10%, {rel_15} % within right 15 %")
+print(f"{rel_5} % within correct 5°, {rel_10} % within correct 10°, {rel_15} % within correct 15°")

@@ -40,13 +40,13 @@ def train_tsne_model(coa_data, n_components=3, pca=False, pca_comp=106, learning
     tsne = TSNE(n_components=n_components, learning_rate=learning_rate, perplexity=perplexity, angle=angle, verbose=2)
 
     # Prevent Printing process
-    sys.stdout = open(os.devnull, 'w')
+    # sys.stdout = open(os.devnull, 'w')
 
     # Fit
     tsne_result = tsne.fit_transform(coa_data_img)
 
     # Return to printing
-    sys.stdout = sys.__stdout__
+    # sys.stdout = sys.__stdout__
 
     return tsne_result, size
 
@@ -112,7 +112,7 @@ def test_model_tsne(coa_data, tsne_result, test_data_path="../data/test_data.csv
 
 if __name__ == "__main__":
     # Load data
-    coa_data = pd.read_csv('../data/training-data_100x100_rgb.csv')
+    coa_data = pd.read_csv('../data/coa_csv/training-data_100x100_rgb.csv')
 
     tsne_result, size = train_tsne_model(coa_data)
     # compare_tsne(coa_data[coa_data['0'] == '-1_G A lion cr..jpg'].index.values[0])
