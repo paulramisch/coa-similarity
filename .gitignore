@@ -8,5 +8,6 @@ data/models
 .ipynb_checkpoints/
 __pycache__/
 .idea/
+.DS_Store 
 
 architecture_comparison/cnn_model_rgb/models
