@@ -1,4 +1,9 @@
 venv/
 .idea/
-data/
+data/coa
+data/coa_csv
+data/coa_cutout
+data/coa_renamed
+data/models
+
 architecture_comparison/cnn_model_rgb/models

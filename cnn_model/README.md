@@ -41,5 +41,5 @@ or you can just navigate to that url and use the form.
 The server will return a list of similar files and an similarity score.
 
 # Reference
-The code is based on a model by Aditya Oke, that can be found here: 
+The code is based on a model by Aditya Oke, that can be found here (Apache License 2.0s): 
 https://github.com/oke-aditya/image_similarity
