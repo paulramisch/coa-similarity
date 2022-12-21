@@ -5,6 +5,7 @@ import cnn_model.torch_model as torch_model
 import cnn_model.torch_engine as torch_engine
 import cnn_model.torch_data as torch_data
 import cnn_model.utils as utils
+import cnn_model.torch_create_embeddings as torch_create_embeddings
 import torchvision.transforms as T
 import cnn_model.config as config
 import numpy as np
@@ -24,20 +25,20 @@ if __name__ == "__main__":
 
     utils.seed_everything(config.SEED)
 
-    transforms_in = T.Compose([T.RandomRotation(degrees=(-5, 5)),
-                               # T.RandomPerspective(distortion_scale=0.05, p=1.0),
-                               # T.RandomCrop(size=(128, 128)),
-                               # T.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 5)),
-                               # T.ColorJitter(brightness=.3, hue=.1),
-                               # T.Grayscale(3),
+    transforms_in = T.Compose([# T.GaussianBlur(kernel_size=(1, 1), sigma=(0.1, 5)),
+                               T.ColorJitter(brightness=.3, hue=.1),
                                T.ToTensor()
                                ])
-    transforms_out = T.Compose([# T.Grayscale(3),
-                                T.ToTensor()])
+    transform_in_after = T.Compose([T.RandomRotation(degrees=(-5, 5)),
+                                    T.RandomPerspective(distortion_scale=0.03, p=1.0),
+                                    # T.RandomCrop(size=(128, 128))
+                                    ])
+    transforms_out = T.Compose([T.ToTensor()])
 
     print("------------ Creating Dataset ------------")
     full_dataset = torch_data.FolderDataset(config.IMG_PATH, config.IMG_PATH_OUTPUT, config.IMG_DICT_PATH,
-                                            transforms_in, transforms_out)
+                                            transforms_in, transform_in_after, transforms_out,
+                                            128, config.ANGLE_DICT_PATH)
 
     train_size = int(config.TRAIN_RATIO * len(full_dataset))
     val_size = len(full_dataset) - train_size
@@ -79,7 +80,8 @@ if __name__ == "__main__":
     # print(device)
 
     autoencoder_params = list(encoder.parameters()) + list(decoder.parameters())
-    optimizer = optim.AdamW(autoencoder_params, lr=config.LEARNING_RATE)
+    # optimizer = optim.AdamW(autoencoder_params, lr=config.LEARNING_RATE)
+    optimizer = optim.AdamW(autoencoder_params, lr=config.LEARNING_RATE, weight_decay=1e-5)
 
     # early_stopper = utils.EarlyStopping(patience=5, verbose=True, path=)
     max_loss = 9999
@@ -107,15 +109,13 @@ if __name__ == "__main__":
     print("Training Done")
 
     print("---- Creating Embeddings for the full dataset ---- ")
+    # load best encoder
+    encoder = torch_model.ConvEncoder()
+    encoder.load_state_dict(torch.load(config.ENCODER_MODEL_PATH, map_location=device))
+    encoder.eval()
+    encoder.to(device)
 
-    embedding = torch_engine.create_embedding(
-        encoder, full_loader, config.EMBEDDING_SHAPE, device
-    )
-
-    # Convert embedding to numpy and save them
-    numpy_embedding = embedding.cpu().detach().numpy()
-    num_images = numpy_embedding.shape[0]
-
-    # Dump the embeddings for complete dataset, not just train
-    flattened_embedding = numpy_embedding.reshape((num_images, -1))
-    np.save(config.EMBEDDING_PATH, flattened_embedding)
+    torch_create_embeddings.create_embeddings(config.IMG_PATH, encoder, config.EMBEDDING_PATH,
+                                              config.EMBEDDING_SHAPE, device, config.IMG_DICT_PATH,
+                                              config.ANGLE_DICT_PATH)
+    print("Embeddings successfully created")
