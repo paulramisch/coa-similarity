@@ -1,0 +1,11 @@
+Flask==2.2.2
+kornia==0.6.8
+matplotlib==3.5.3
+numpy==1.21.5
+opencv_python==4.6.0.66
+Pillow==9.3.0
+scikit_learn==1.2.0
+torch==1.12.1
+torchvision==0.13.1
+tqdm==4.63.0
+waitress==2.1.2
